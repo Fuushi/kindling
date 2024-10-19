@@ -7,6 +7,7 @@ import sys
 from PyPDF2 import PdfReader
 import pymupdf as fitz
 import json
+from PIL import Image
 
 def extract_information(pdf_path):
     with open(pdf_path, 'rb') as f:
@@ -44,9 +45,22 @@ def extract_all_images(pdf_path, output_folder):
                 # Define the image file name
                 image_name = f"{os.path.splitext(os.path.basename(pdf_path))[0]}_page{page_number+1}_img{img_index+1}.png".replace("/","").replace(" ","")
                 image_path = os.path.join(output_folder, image_name)
+                dist_image_path=os.path.join(output_folder, f"dist_{image_name}")
                 
-                pix.save(image_path)  # Save the image
+                pix.save(image_path)  # Save the raw image
                 
+                #save low res image
+                try:
+                    with Image.open(image_path) as img_pillow:
+                        # Resize the image to lower resolution (e.g., half size or any size you want)
+                        FACTOR=8
+                        low_res_image = img_pillow.resize((img_pillow.width // FACTOR, img_pillow.height // FACTOR), Image.ANTIALIAS)
+
+                        # Save the low resolution image
+                        low_res_image.save(dist_image_path)
+                except:
+                    pix.save(dist_image_path)
+
                 # Get the position of the image (bounding box)
                 bbox = page.get_image_bbox(img)
                 

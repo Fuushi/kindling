@@ -4,7 +4,7 @@
 
 
 function test() {
-    return "Kindling 0.5, No Rights Reserved.";
+    return "Kindling 0.5 BETA. We are not responsible for any distribution of copyrighted material.";
 }
 
 function loadImageGrid() {
@@ -23,17 +23,22 @@ function loadImageGrid() {
         // Check if the file does not contain '.py' or '.pdf'
         if (!str_contains($file, '.')) {
             //Parse
+
+            //
+
             $str = file_get_contents("novels/".$file."/data.json");
             $json = json_decode($str, true); // decode the JSON into an associative array
 
             //get path to img 0
             $img = $json['img_data'][0]['file_name'];
 
+            #echo str_replace($img, "/", "/dist_");
+
             $target="serveNovel.php?novelID=".$file."&pageID=0"; #make page dynamic, save to cache
 
 
             //display
-            $out = $out . '<a href="'. $target .'"><img src="' . "novels/" . $img . '" alt="Image 1"></a>'; // Using htmlspecialchars for safety
+            $out = $out . '<a href="'. $target .'"><img src="' . "novels/". str_replace("/", "/dist_", $img) . '" alt="Image 1"></a>'; // Using htmlspecialchars for safety
         }
     }
     
