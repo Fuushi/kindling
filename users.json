@@ -1,0 +1,20 @@
+[
+    {
+        "username": "admin",
+        "password_hash": "not_hashed",
+        "token": "dUcLFCnzZecRHQILsEBaVIWGek1VefP5uuIF9DNw",
+        "data": {
+            "bookmarks": [],
+            "highlights": []
+        }
+    },
+    {
+        "username": "guest",
+        "password_hash": "guest123",
+        "token": "rLL3YFrToeREQj46w0sFeSkVyLDwIvh6YhKdzXzE",
+        "data": {
+            "bookmarks": [],
+            "highlights": []
+        }
+    }
+]

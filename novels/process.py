@@ -53,7 +53,7 @@ def extract_all_images(pdf_path, output_folder):
                 try:
                     with Image.open(image_path) as img_pillow:
                         # Resize the image to lower resolution (e.g., half size or any size you want)
-                        FACTOR=8
+                        FACTOR=2
                         low_res_image = img_pillow.resize((img_pillow.width // FACTOR, img_pillow.height // FACTOR), Image.ANTIALIAS)
 
                         # Save the low resolution image
@@ -97,8 +97,7 @@ def main():
         if ".pdf" in file:
             outputPath=file.replace(".pdf", "/")
 
-            #RE ENABLE
-            #if os.path.exists(outputPath): continue
+            if os.path.exists(outputPath): continue
             try:
                 os.mkdir(outputPath)
             except FileExistsError:

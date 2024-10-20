@@ -1,8 +1,8 @@
 <?php
 // index.php
 include 'functions.php';
-
-
+include 'auth.php';
+include 'on_connect.php';
 
 ?>
 
@@ -23,6 +23,10 @@ include 'functions.php';
             <form action="users.php" method="GET">
                 <input id="search" type="text" placeholder="Search Kindling">
             </form>
+            <a href="accounts.php">
+                <img src="src/more.png" alt="ICON" style="position: absolute; right:10px; top:10px; height:30px; width:35px;">
+            </a>
+
         </div>
     </header>
 
