@@ -109,3 +109,6 @@ tmp/
 
 # IDE files (if any)
 .idea/
+
+#custom
+novels/
