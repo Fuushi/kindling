@@ -1,10 +1,43 @@
 <?php
 // index.php
 include 'functions.php';
+include 'on_connect.php';
 
 $novelID=$_GET['novelID'];
 $pageID=$_GET['pageID'];
 
+
+
+//bookmark
+$bookmark_delta = isset($_GET['bookmark']);
+if ($bookmark_delta) {
+    #apply changes
+
+    //is user logged in
+    if (isset($_SESSION['session_token'])) {
+        //logged in
+
+        //get user id
+        $user_id=$_SESSION['user_id'];
+
+        //string boolean conversion
+        $value = ($_GET['bookmark']==="true");
+
+        // bookmark
+        bookmark($novelID, $pageID, $user_id, $value);
+    } else {
+        //not logged in, ignore
+        #echo "NOT LOGGED IN";
+        #echo implode($_SESSION);
+    }
+
+}
+
+if (isset($_SESSION['session_token'])) {
+    $bookmarked=is_bookmarked($novelID, $pageID, $_SESSION['user_id']);
+} else {
+    $bookmarked = false;
+}
 
 ?>
 
@@ -24,6 +57,10 @@ $pageID=$_GET['pageID'];
             </a>
             <p style="font-size: 0.75rem; margin: 10px;"><?php echo enforce_size_limit(get_metadata($novelID)['title'], 65) ?></p>
         </div>
+
+        <a href="<?php echo 'serveNovel.php?novelID='.$novelID."&pageID=".$pageID?>&bookmark=<?php echo !$bookmarked ? 'true' : 'false'?>">
+                <img src="<?php echo  $bookmarked ? 'src/bookmark_true.png' : 'src/bookmark_false.png'?>" alt="ICON" style="position: absolute; right:10px; top:10px; height:30px; width:35px;">
+        </a>
     </header>
 
 
@@ -52,7 +89,7 @@ $pageID=$_GET['pageID'];
     <footer>
         <div class="container">
             <p style="float: left; font-size: 10px; color: gray">Estimated Time Remaining</p>
-            <a href="nav.php" style="float: right; font-size: 10px; color: gray; text-decoration: none;">page <?php echo $pageID?></a>
+            <a href="nav.php" style="float: right; font-size: 10px; color: gray; text-decoration: none;">page <?php echo $pageID+1?></a>
         </div>
     </footer>
 </body>

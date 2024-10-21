@@ -127,4 +127,82 @@ function generateRandomString($length = 10) {
 
     return $randomString;
 }
+
+function bookmark($novelID, $pageID, $userID, $value) {
+    // Load users.json
+    $str = file_get_contents("users.json");
+    $json = json_decode($str, true); // Decode the JSON into an associative array
+
+    // With user id, set or remove bookmark
+    foreach($json as $key => $user) { // Use $key to reference the position in the array
+        if ($userID == $user['username']) {
+
+            // Check if there's a bookmarks array for the novel
+            if (isset($user['data']['bookmarks'][$novelID])) {
+                // If $value is true, add the bookmark
+                if ($value) {
+                    // If pageID not in array, add it
+                    if (!in_array($pageID, $user['data']['bookmarks'][$novelID])) {
+                        array_push($user['data']['bookmarks'][$novelID], $pageID);
+                    }
+                } else {
+                    // If $value is false, remove the pageID from the bookmarks array
+                    if (($keyIndex = array_search($pageID, $user['data']['bookmarks'][$novelID])) !== false) {
+                        unset($user['data']['bookmarks'][$novelID][$keyIndex]);
+
+                        // Reindex the array after unset
+                        $user['data']['bookmarks'][$novelID] = array_values($user['data']['bookmarks'][$novelID]);
+                    }
+                }
+            } elseif ($value) {
+                // If $value is true and no bookmark array exists, create it
+                $user['data']['bookmarks'][$novelID] = [$pageID];
+            }
+
+            // Update the original json array
+            $json[$key] = $user;
+
+            // Dump to file
+            $encode = json_encode($json, JSON_PRETTY_PRINT);
+            file_put_contents("users.json", $encode);
+
+            return true;
+        }
+    }
+    return false;
+}
+
+
+function is_bookmarked($novelID, $pageID, $userID) {
+    #echo 'Checking bookmark';
+
+    // Load users.json
+    $str = file_get_contents("users.json");
+    $json = json_decode($str, true); // Decode the JSON into an associative array
+
+    // Search for the user by userID
+    foreach($json as $user) {
+        if ($userID == $user['username']) {
+            #echo "User Found";
+
+            // Check if the user has bookmarks for the given novel
+            if (isset($user['data']['bookmarks'][$novelID])) {
+                // Check if the pageID is in the bookmarks array
+                if (in_array($pageID, $user['data']['bookmarks'][$novelID])) {
+                    #echo "Bookmark exists!";
+                    return true;
+                }
+            }
+
+            // If no bookmark was found for the given pageID
+            #echo "Bookmark does not exist.";
+            return false;
+        }
+    }
+    
+    #echo "User not Found";
+    return false;
+}
+
+
 ?>

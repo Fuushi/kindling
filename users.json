@@ -2,9 +2,11 @@
     {
         "username": "admin",
         "password_hash": "not_hashed",
-        "token": "Se00MwjpMjHijnwtEH6fVl1OnyQb1kCo1o7W1H1O",
+        "token": "LcWt1cVonVAeahn8ck0MKXW8svzoR0uxrd3jiNL3",
         "data": {
-            "bookmarks": [],
+            "bookmarks": {
+                "circe": []
+            },
             "highlights": []
         }
     },

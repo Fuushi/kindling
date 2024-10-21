@@ -67,8 +67,6 @@ if ($logged_in) {
     <body>
     <div class="content container">
         <?php echo $page?>
-
-        
     </div>
     </body>
     
