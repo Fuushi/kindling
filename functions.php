@@ -34,8 +34,12 @@ function loadImageGrid() {
 
             #echo str_replace($img, "/", "/dist_");
 
-            $target="serveNovel.php?novelID=".$file."&pageID=0"; #make page dynamic, save to cache
-
+            if (isset($_SESSION['user_id'])) {
+                $page_id = get_progression($file, $_SESSION['user_id']);
+            } else {
+                $page_id=0;
+            }
+            $target="serveNovel.php?novelID=".$file."&pageID=".$page_id; #make page dynamic, save to cache
 
             //display
             $out = $out . '<a href="'. $target .'"><img src="' . "novels/". str_replace("/", "/dist_", $img) . '" alt="Image 1"></a>'; // Using htmlspecialchars for safety
@@ -116,17 +120,7 @@ function enforce_size_limit($string, $max_size) {
     }
 }
 
-function generateRandomString($length = 10) {
-    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $charactersLength = strlen($characters);
-    $randomString = '';
 
-    for ($i = 0; $i < $length; $i++) {
-        $randomString .= $characters[random_int(0, $charactersLength - 1)];
-    }
-
-    return $randomString;
-}
 
 function bookmark($novelID, $pageID, $userID, $value) {
     // Load users.json
@@ -204,5 +198,59 @@ function is_bookmarked($novelID, $pageID, $userID) {
     return false;
 }
 
+function update_progression($novelID, $pageID, $userID) {
+    //updates progression for novel, page, user, returns success
 
+    // Load users.json
+    $str = file_get_contents("users.json");
+    $json = json_decode($str, true); // Decode the JSON into an associative array
+
+    // With user id, set or remove bookmark
+    foreach($json as $key => $user) { // Use $key to reference the position in the array
+        if ($userID == $user['username']) {
+            #user found
+
+            #modify data
+            $user['data']['progression'][$novelID]=$pageID;
+
+            // Update the original json array
+            $json[$key] = $user;
+
+            // Dump to file
+            $encode = json_encode($json, JSON_PRETTY_PRINT);
+            file_put_contents("users.json", $encode);
+
+            return true;
+        }
+    }
+    return false;
+}
+
+function get_progression($novelID, $userID) {
+    //get progression for novel, user, returns page
+
+    // Load users.json
+    $str = file_get_contents("users.json");
+    $json = json_decode($str, true); // Decode the JSON into an associative array
+
+    // With user id, set or remove bookmark
+    foreach($json as $key => $user) { // Use $key to reference the position in the array
+        if ($userID == $user['username']) {
+            //user found
+
+            //get data
+            if (isset($user['data']['progression'][$novelID])) {
+                $page = $user['data']['progression'][$novelID];
+            } else {
+                return 0;
+            }
+            
+
+            //return
+            return $page;
+        }
+    }
+    //if not logged in, returns page 0
+    return 0;
+}
 ?>

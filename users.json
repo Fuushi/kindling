@@ -2,21 +2,27 @@
     {
         "username": "admin",
         "password_hash": "not_hashed",
-        "token": "LcWt1cVonVAeahn8ck0MKXW8svzoR0uxrd3jiNL3",
+        "token": "slezPaqO4ReykSGTtq04AmZokmhgsVpggCYBRLDV",
         "data": {
-            "bookmarks": {
-                "circe": []
-            },
-            "highlights": []
+            "progression": {},
+            "bookmarks": {},
+            "highlights": [],
+            "connection_ips": []
         }
     },
     {
         "username": "guest",
         "password_hash": "guest123",
-        "token": "rLL3YFrToeREQj46w0sFeSkVyLDwIvh6YhKdzXzE",
+        "token": "sm0g7DV9b5CUSr8q3gQ5c6AaJEm7H00zzi8mI2Im",
         "data": {
-            "bookmarks": [],
-            "highlights": []
+            "progression": [],
+            "bookmarks": {
+                "circe": [
+                    "0"
+                ]
+            },
+            "highlights": [],
+            "connection_ips": []
         }
     }
 ]

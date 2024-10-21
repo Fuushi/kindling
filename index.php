@@ -1,8 +1,11 @@
 <?php
 // index.php
-include 'functions.php';
+
 include 'auth.php';
 include 'on_connect.php';
+include 'functions.php';
+
+
 
 ?>
 
@@ -44,7 +47,7 @@ include 'on_connect.php';
 
     <footer>
         <div class="container">
-            <p><?php echo test()?></p>
+            <p style="font-size:8px;"><?php echo test()?></p>
         </div>
     </footer>
 </body>

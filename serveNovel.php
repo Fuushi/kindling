@@ -8,7 +8,7 @@ $pageID=$_GET['pageID'];
 
 
 
-//bookmark
+//bookmark event handling
 $bookmark_delta = isset($_GET['bookmark']);
 if ($bookmark_delta) {
     #apply changes
@@ -33,11 +33,18 @@ if ($bookmark_delta) {
 
 }
 
+//user stat handling
 if (isset($_SESSION['session_token'])) {
+    //bookmarks
     $bookmarked=is_bookmarked($novelID, $pageID, $_SESSION['user_id']);
+
+    //page progress
+    update_progression($novelID, $pageID, $_SESSION['user_id']);
 } else {
+    //bookmarks
     $bookmarked = false;
 }
+
 
 ?>
 
@@ -73,7 +80,7 @@ if (isset($_SESSION['session_token'])) {
         <div class="bodyText">
             <?php echo servePage($novelID, $pageID)?>
         </div>
-        <a href="<?php echo "serveNovel.php?novelID=".$novelID."&pageID=".$pageID-1 ?>" style="position:absolute; height:100%; width: 20%; float:left">
+        <a href="<?php echo "serveNovel.php?novelID=".$novelID."&pageID=".max($pageID-1, 0) ?>" style="position:absolute; height:100%; width: 20%; float:left">
 
         </a>
 

@@ -15,19 +15,19 @@ def extract_information(pdf_path):
         information = pdf.metadata
         number_of_pages = len(pdf.pages)
 
-    txt = f"""
-    Information about {pdf_path}: 
+        txt = f"""
+        Information about {pdf_path}: 
 
-    Author: {information.author}
-    Creator: {information.creator}
-    Producer: {information.producer}
-    Subject: {information.subject}
-    Title: {information.title}
-    Number of pages: {number_of_pages}
-    """
+        Author: {information.author}
+        Creator: {information.creator}
+        Producer: {information.producer}
+        Subject: {information.subject}
+        Title: {information.title}
+        Number of pages: {number_of_pages}
+        """
 
-    #print(txt)
-    return information
+        #print(txt)
+        return information
 
 
 def extract_all_images(pdf_path, output_folder):
@@ -117,20 +117,25 @@ def main():
             out={}
             i = 0
             for pg in text.values():
-                #use page number as delimiter
-                segments = pg.split(str(i))
+                delimit=True
+                if delimit:
+                    #use page number as delimiter
+                    segments = pg.split(str(i))
 
-                #remove first segment
-                if len(segments) > 1:
-                    segments[0]=f" "
+                    #remove first segment
+                    if len(segments) > 1:
+                        segments[0]=f" "
 
-                #rebuild
-                r=""
-                for segment in segments:
-                    r = r+segment
+                    #rebuild
+                    r=""
+                    for segment in segments:
+                        r = r+segment
 
-                #assign to array
-                out[i] = r
+                    #assign to array
+                    out[i] = r
+
+                else:
+                    out[i]=pg
 
                 #increment page num
                 i+=1
@@ -139,13 +144,9 @@ def main():
             #pack metadata
             packed_metadata = {
                 "author" : metadata.author,
-                "author_raw" : metadata.author_raw,
-                "creation_date_raw" : metadata.creation_date_raw,
                 "producer" : metadata.producer,
                 "subject" : metadata.subject,
-                "subjuect_raw" : metadata.subject_raw,
                 "title" : metadata.title,
-                "title_raw" : metadata.title_raw,
                 "page_count" : len(text)
             }
 
