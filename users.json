@@ -1,8 +1,8 @@
 [
     {
         "username": "admin",
-        "password_hash": "not_hashed",
-        "token": "slezPaqO4ReykSGTtq04AmZokmhgsVpggCYBRLDV",
+        "password_hash": "ae8ac0542b0ae140fe22cfeac5c6e2841f6718b633e5b6126640b235dcc825d2",
+        "token": "KguZeWAEQX3pmXvBYtYmX1LhOLJejlKFa5CnR35f",
         "data": {
             "progression": {},
             "bookmarks": {},
@@ -12,8 +12,8 @@
     },
     {
         "username": "guest",
-        "password_hash": "guest123",
-        "token": "sm0g7DV9b5CUSr8q3gQ5c6AaJEm7H00zzi8mI2Im",
+        "password_hash": "6b93ccba414ac1d0ae1e77f3fac560c748a6701ed6946735a49d463351518e16",
+        "token": "hFjLdTiHLPAmF3vpZUzdrmABJRg5XYcsKlDBZGbF",
         "data": {
             "progression": [],
             "bookmarks": {

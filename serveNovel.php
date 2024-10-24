@@ -84,7 +84,7 @@ if (isset($_SESSION['session_token'])) {
 
         </a>
 
-        <a href="<?php echo "serveNovel.php?novelID=".$novelID."&pageID=".$pageID+1 ?>" style="position:absolute; height:100%; width:20%; right:0;">
+        <a href="<?php echo "serveNovel.php?novelID=".$novelID."&pageID=".min($pageID+1,get_metadata($novelID)['page_count']-1) ?>" style="position:absolute; height:100%; width:20%; right:0;">
 
         </a>
 
@@ -96,7 +96,7 @@ if (isset($_SESSION['session_token'])) {
     <footer>
         <div class="container">
             <p style="float: left; font-size: 10px; color: gray">Estimated Time Remaining</p>
-            <a href="nav.php" style="float: right; font-size: 10px; color: gray; text-decoration: none;">page <?php echo $pageID+1?></a>
+            <a href="nav.php?<?php echo "novelID=".$novelID."&pageID=".$pageID ?>" style="float: right; font-size: 10px; color: gray; text-decoration: none;">page <?php echo $pageID+1?></a>
         </div>
     </footer>
 </body>

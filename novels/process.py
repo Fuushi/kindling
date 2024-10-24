@@ -1,3 +1,6 @@
+#ENV
+DELIMIT=True
+FACTOR=2
 ##
 import os
 import sys
@@ -43,17 +46,22 @@ def extract_all_images(pdf_path, output_folder):
                 pix = fitz.Pixmap(pdf, xref)  # Create a Pixmap for the image
 
                 # Define the image file name
-                image_name = f"{os.path.splitext(os.path.basename(pdf_path))[0]}_page{page_number+1}_img{img_index+1}.png".replace("/","").replace(" ","")
-                image_path = os.path.join(output_folder, image_name)
-                dist_image_path=os.path.join(output_folder, f"dist_{image_name}")
-                
-                pix.save(image_path)  # Save the raw image
+                try:
+                    image_name = f"{os.path.splitext(os.path.basename(pdf_path))[0]}_page{page_number+1}_img{img_index+1}.jpeg".replace("/","").replace(" ","")
+                    image_path = os.path.join(output_folder, image_name)
+                    dist_image_path=os.path.join(output_folder, f"dist_{image_name}")
+                    pix.save(image_path)  # Save the raw image
+                except:
+                    image_name = f"{os.path.splitext(os.path.basename(pdf_path))[0]}_page{page_number+1}_img{img_index+1}.png".replace("/","").replace(" ","")
+                    image_path = os.path.join(output_folder, image_name)
+                    dist_image_path=os.path.join(output_folder, f"dist_{image_name}")
+                    pix.save(image_path)  # Save the raw image
+
                 
                 #save low res image
                 try:
                     with Image.open(image_path) as img_pillow:
                         # Resize the image to lower resolution (e.g., half size or any size you want)
-                        FACTOR=2
                         low_res_image = img_pillow.resize((img_pillow.width // FACTOR, img_pillow.height // FACTOR), Image.ANTIALIAS)
 
                         # Save the low resolution image
@@ -117,8 +125,7 @@ def main():
             out={}
             i = 0
             for pg in text.values():
-                delimit=True
-                if delimit:
+                if DELIMIT:
                     #use page number as delimiter
                     segments = pg.split(str(i))
 

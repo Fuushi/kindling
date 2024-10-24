@@ -19,7 +19,8 @@ function authenticate_login($username, $password, $ip) {
     $json = json_decode($str, true); // decode the JSON into an associative array
 
     foreach($json as $key => $user) { // Use $key to reference the position in the array
-        if (($username == $user['username']) and ($password == $user['password_hash'])) {
+        #echo hash("SHA256", $password);
+        if (($username == $user['username']) and (hash("SHA256", $password) == $user['password_hash'])) {
             ##create session token
             $token = generateRandomString(40);
 
