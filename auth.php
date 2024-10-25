@@ -26,10 +26,17 @@ function authenticate_login($username, $password, $ip) {
 
             #assign in memory
             $_SESSION['session_token'] = $token;
-            $_SESSION['user_id'] = $username;
+            $_SESSION['user_id'] = $user['username'];
+
+            #create token cookie
+            setcookie("auth_token", $token, time() + 86400 * 30, "/");
+
+            #get token array
+            $tokens=$json[$key]['tokens'];
+            array_push($tokens, $token);
 
             #update the original json array
-            $json[$key]['token'] = $token;
+            $json[$key]['tokens'] = $tokens;
 
             #dump token to file
             $encode = json_encode($json, JSON_PRETTY_PRINT);
@@ -42,5 +49,29 @@ function authenticate_login($username, $password, $ip) {
     return false;
 }
 
+function authenticate_by_token($token, $ip) {
+
+    //load database ;)
+    $str = file_get_contents("users.json");
+    $json = json_decode($str, true); // decode the JSON into an associative array
+
+    //iterate until match found
+    foreach($json as $key => $user) { // Use $key to reference the position in the array
+        
+        //match found?
+        if (in_array($token, $user['tokens'])) {
+
+            //assign memory
+            $_SESSION['session_token'] = $token;
+            $_SESSION['user_id'] = $user['username'];
+
+            //return true (authentication succeeded)
+            return true;
+        }
+    }
+
+    //return false (authentication failed)
+    return false;
+}
 
 ?>

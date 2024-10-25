@@ -29,11 +29,28 @@ if (isset($_POST['password'])) {
     } else {
         echo "Login Failure!";
     }
-}
+} else {
+    //user not logging in
+    
+    //is the user already logged in?
+    if (!isset($_SESSION['user_id'])) {
+        
+        //check for token in cookies
+        if (isset($_COOKIE['auth_token'])) {
 
-#if (isset($_SESSION['session_token'])) {
-    #echo $_SESSION['session_token'];
-#} else {
-    #echo "No Session Token";
-#}
+            //ensure session
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+
+            //authenticate
+            $success = authenticate_by_token($_COOKIE['auth_token'], "111.111.111.111");
+
+        }
+    }
+
+    
+
+
+}
 ?>

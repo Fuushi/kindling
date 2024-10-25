@@ -2,7 +2,7 @@
     {
         "username": "admin",
         "password_hash": "ae8ac0542b0ae140fe22cfeac5c6e2841f6718b633e5b6126640b235dcc825d2",
-        "token": "KguZeWAEQX3pmXvBYtYmX1LhOLJejlKFa5CnR35f",
+        "tokens": [],
         "data": {
             "progression": {},
             "bookmarks": {},
@@ -13,7 +13,7 @@
     {
         "username": "guest",
         "password_hash": "6b93ccba414ac1d0ae1e77f3fac560c748a6701ed6946735a49d463351518e16",
-        "token": "hFjLdTiHLPAmF3vpZUzdrmABJRg5XYcsKlDBZGbF",
+        "tokens": [],
         "data": {
             "progression": [],
             "bookmarks": {
