@@ -1,4 +1,5 @@
 <?php 
+require 'auth.php';
 
 ##session handling
 if (session_status() === PHP_SESSION_NONE) {

@@ -99,3 +99,12 @@ Currently, account creation must be done manually. Passwords are stored using SH
 
 Enjoy using **Kindling** and feel free to contribute improvements or suggestions!
 
+
+
+### Disclaimer
+
+*Kindling* is an independent, open-source project that is not affiliated with or endorsed by Amazon or any related entities. This software does not include any proprietary assets, code, or content from Amazon or the Kindle app, aside from conceptual inspiration and a general visual style.
+
+*Kindling* is designed for users to self-host and upload their own legally obtained, DRM-free content. Users are responsible for ensuring that any content they upload and use with *Kindling* complies with applicable copyright laws. This software does not facilitate or support the circumvention of Digital Rights Management (DRM) protections on copyrighted content.
+
+By using *Kindling*, you agree to take full responsibility for your compliance with all relevant copyright and intellectual property laws.

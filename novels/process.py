@@ -1,16 +1,29 @@
-#ENV
-DELIMIT=True
-FACTOR=2
 ##
 import os
 import sys
 
-# extract_doc_info.py
+#ENV
+print(sys.argv)
 
+##get args
+FORCE_REBUILD = "--force-rebuild" in sys.argv
+try: COMPRESS_FACTOR = int(sys.argv[sys.argv.index("--compression-factor")+1])
+except ValueError: COMPRESS_FACTOR = 4
+
+try: SELECT = (sys.argv[sys.argv.index("--select")+1])
+except ValueError: SELECT = None
+
+print(f"FORCE_REBUILD: {FORCE_REBUILD}\nCOMPRESSION_FACTOR: {COMPRESS_FACTOR}")
+
+DELIMIT = not ("--no-delimit" in sys.argv)
+
+
+#imports
 from PyPDF2 import PdfReader
 import pymupdf as fitz
 import json
 from PIL import Image
+import sys
 
 def extract_information(pdf_path):
     with open(pdf_path, 'rb') as f:
@@ -57,17 +70,20 @@ def extract_all_images(pdf_path, output_folder):
                     dist_image_path=os.path.join(output_folder, f"dist_{image_name}")
                     pix.save(image_path)  # Save the raw image
 
-                
-                #save low res image
                 try:
+                    #save low res image
                     with Image.open(image_path) as img_pillow:
-                        # Resize the image to lower resolution (e.g., half size or any size you want)
-                        low_res_image = img_pillow.resize((img_pillow.width // FACTOR, img_pillow.height // FACTOR), Image.ANTIALIAS)
+                        # Calculate the new dimensions
+                        new_height = 300 #int(img_pillow.height // COMPRESS_FACTOR)  # Adjust as needed
+                        new_width = int(new_height * 0.625)  # Enforcing 1.6:1 aspect ratio
 
-                        # Save the low resolution image
+                        # Resize the image
+                        low_res_image = img_pillow.resize((new_width, new_height), Image.ANTIALIAS)
+
+                        # Save or display the image
                         low_res_image.save(dist_image_path)
                 except:
-                    pix.save(dist_image_path)
+                    low_res_image.save(dist_image_path.replace('.jpeg', '.png'))
 
                 # Get the position of the image (bounding box)
                 bbox = page.get_image_bbox(img)
@@ -96,6 +112,9 @@ def extract_text_page_by_page(pdf_path):
     return text_output
 
 def main():
+    ##get args
+    
+
     path = os.getcwd()
     print(path)
 
@@ -103,9 +122,22 @@ def main():
 
     for file in files:
         if ".pdf" in file:
+            #select
+            if (SELECT):
+                if not ".pdf" in file:
+                    continue
+                if not (file == SELECT):
+                    continue
+                        
+            
+            #generate output path
             outputPath=file.replace(".pdf", "/")
 
-            if os.path.exists(outputPath): continue
+            #ignore if made and not force rebuild
+            if os.path.exists(outputPath): 
+                if not FORCE_REBUILD: continue
+
+            #attempt to create path
             try:
                 os.mkdir(outputPath)
             except FileExistsError:
@@ -169,7 +201,7 @@ def main():
 
 
             #disp
-            print(metadata)
+            print(f"Author: {packed_metadata['author']}\nTitle: {packed_metadata['title']}\nPage count: {packed_metadata['page_count']}\nImages Encoded: {len(img_data)}\n----")
 
     return
 

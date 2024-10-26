@@ -170,7 +170,7 @@ form button {
     display: grid;
     grid-template-columns: repeat(3, 1fr); /* 3 columns */
     gap: 20px; /* Or 'npx' for spacing */
-    margin-top: 1rem;
+    margin: 1rem;
     align-items: start; /* Ensure items align at the top */
     justify-items: center; /* Optional: Center images horizontally */
     color: white;
@@ -200,12 +200,12 @@ form button {
     height: 100%;
 }
 
-.bodyText{
+.bodyText {
     box-sizing: border-box;
     margin: 10;
     margin-left: 15px;
     padding: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Georgia', serif; /* Changed to Georgia font */
     margin-right: 15px;
     margin-top: 15px;
     font-size: 15px;

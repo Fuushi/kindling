@@ -4,7 +4,7 @@
 include 'on_connect.php';
 include 'functions.php';
 
-
+$collection_id = $_GET['collection_id']
 
 ?>
 
@@ -37,7 +37,7 @@ include 'functions.php';
             <div class="content container">
                 <section id="gallery">
                     <div class="grid">
-                        <?php echo loadImageGrid()?>
+                        <?php echo serve_collection($collection_id) ?>
                     </div>
                 </section>
             </div>

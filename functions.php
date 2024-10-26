@@ -4,7 +4,62 @@
 
 
 function test() {
-    return "Kindling 0.5 BETA. We are not responsible for any distribution of copyrighted material.";
+    return "Kindling 0.6 BETA. MIT License.";
+}
+
+function serve_collection($collection_id) {
+    //load collection data from ID
+
+    //load collections
+    $str = file_get_contents("collections.json");
+    $collections_json = json_decode($str, true); // decode the JSON into an associative array 
+
+    //find collection
+    $collection=null;
+    foreach($collections_json as $c) {
+        if ($c['name'] == $collection_id) {
+            $collection=$c;
+        }
+    }
+
+    //if not found, throw
+    if ($collection == null) {
+        return "No Collection Found";
+    }
+
+    //
+    $out = "";
+
+    //iterate through collection
+    foreach ($collection['contents'] as $file) {
+        // Check if the file does not contain '.py' or '.pdf'
+        if (!str_contains($file, '.')) {
+            //Parse
+
+            //
+
+            $str = file_get_contents("novels/".$file."/data.json");
+            $json = json_decode($str, true); // decode the JSON into an associative array
+
+            //get path to img 0
+            $img = $json['img_data'][0]['file_name'];
+
+            #echo str_replace($img, "/", "/dist_");
+
+            if (isset($_SESSION['user_id'])) {
+                $page_id = get_progression($file, $_SESSION['user_id']);
+            } else {
+                $page_id=0;
+            }
+            $target="serveNovel.php?novelID=".$file."&pageID=".$page_id; #make page dynamic, save to cache
+
+            //display
+            $out = $out . '<a href="'. $target .'"><img src="' . "novels/". str_replace("/", "/dist_", $img) . '" alt="Image 1"></a>'; // Using htmlspecialchars for safety
+        }
+    }
+
+    //return div
+    return $out;
 }
 
 function loadImageGrid() {
@@ -18,6 +73,41 @@ function loadImageGrid() {
     $files = array_diff(scandir($path), array('.', '..'));
 
     $out="";
+
+    //load collections
+    $str = file_get_contents("collections.json");
+    $json = json_decode($str, true); // decode the JSON into an associative array
+
+    //remove all books in collections from main array
+    //iterate collections
+    foreach ($json as $collection) {
+
+        //remove from main array
+        $files = array_diff($files, $collection['contents']);
+
+    }
+
+    //create refs for collections
+    foreach ($json as $collection) {
+        //get first image, from first content
+
+        //get data json
+        $str = file_get_contents("novels/".$collection['contents'][0]."/data.json");
+        $json_collection = json_decode($str, true); // decode the JSON into an associative array
+
+        //get path to img 0
+        $img = $json_collection['img_data'][1]['file_name'];
+
+        //set target
+        $target="collection.php?collection_id=".$collection['name']; 
+
+        // create div
+        $div = "<a href='" . $target . "'> <img style='outline-color: gray; outline-style: dashed; outline-width: 5px; border-radius: 8px;' src='novels/" . str_replace("/", "/dist_", $img) . "' alt='Image 1'></a>";
+
+        //append div to out
+        $out = $out.$div;
+    }
+
 
     foreach ($files as $file) {
         // Check if the file does not contain '.py' or '.pdf'

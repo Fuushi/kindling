@@ -77,7 +77,7 @@ if (isset($_SESSION['session_token'])) {
 
     <div class="content container">
         <p>-</p>
-        <div class="bodyText">
+        <div class="bodyText" style="font-family: 'Times New Roman', serif; font-size: 11pt;">
             <?php echo servePage($novelID, $pageID)?>
         </div>
         <a href="<?php echo "serveNovel.php?novelID=".$novelID."&pageID=".max($pageID-1, 0) ?>" style="position:absolute; height:100%; width: 20%; float:left">
