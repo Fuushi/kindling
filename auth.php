@@ -29,7 +29,7 @@ function authenticate_login($username, $password, $ip) {
             $_SESSION['user_id'] = $user['username'];
 
             #create token cookie
-            setcookie("auth_token", $token, time() + 86400 * 30, "/");
+            setcookie("auth_token", $token, time() + 86400 * 30, "/", $secure=true);
 
             #get token array
             $tokens=$json[$key]['tokens'];

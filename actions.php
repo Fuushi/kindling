@@ -1,6 +1,6 @@
 <?php
 require 'on_connect.php';
-setcookie("auth_token", "empty", time()-3600, "/");
+setcookie("auth_token", "empty", time()-3600, "/", $secure=true);
 session_destroy();
 
 ?>
