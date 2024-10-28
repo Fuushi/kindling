@@ -74,4 +74,46 @@ function authenticate_by_token($token, $ip) {
     return false;
 }
 
+function log_connection() {
+    // Start session if it hasn't already been started
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    // Prepare log data
+    $data = [
+        'ip' => $_SERVER['REMOTE_ADDR'],
+        'src' => basename($_SERVER['SCRIPT_NAME']),
+        'time' => round(microtime(true) * 1000)
+    ];
+
+    // Load logs db once
+    $str_logs = file_get_contents("logs/access_logs.json");
+    $json_logs = json_decode($str_logs, true) ?? []; // decode the JSON into an associative array
+
+    // Check if user is logged in
+    if (isset($_SESSION['session_token'])) {
+        // User is logged in
+        $userId = $_SESSION['user_id'];
+
+        // Log as user
+        if (!isset($json_logs[$userId])) {
+            $json_logs[$userId] = [];
+        }
+        array_push($json_logs[$userId], $data);
+
+    } else {
+        // Not logged in, log as guest
+        if (!isset($json_logs['guest'])) {
+            $json_logs['guest'] = [];
+        }
+        array_push($json_logs['guest'], $data);
+    }
+
+    // Write to disk
+    $encode = json_encode($json_logs, JSON_PRETTY_PRINT);
+    file_put_contents("logs/access_logs.json", $encode);
+}
+
+
 ?>

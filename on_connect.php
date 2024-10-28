@@ -7,13 +7,6 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 
-#assign ID
-#if (!isset($_SESSION['session_id'])) {
-#    $_SESSION['session_id'] = generateRandomString(20);
-#    $_SESSION['session_token'] = null;
-#}
-
-#actions
 
 #is user logging in
 if (isset($_POST['password'])) {
@@ -50,8 +43,8 @@ if (isset($_POST['password'])) {
         }
     }
 
-    
-
-
 }
+
+//logging
+log_connection();
 ?>

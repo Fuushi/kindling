@@ -11,7 +11,7 @@
         }
     },
     {
-        "username": "guest",
+        "username": "guest_user",
         "password_hash": "6b93ccba414ac1d0ae1e77f3fac560c748a6701ed6946735a49d463351518e16",
         "tokens": [],
         "data": {
