@@ -4,8 +4,9 @@
 include 'on_connect.php';
 include 'functions.php';
 
-$album_id = $_GET['album_id']
-
+$album_id = $_GET['album_id'];
+$page_id = $_GET['page_id'];
+$sort = $_GET['sort'];
 ?>
 
 <!DOCTYPE html>
@@ -32,9 +33,19 @@ $album_id = $_GET['album_id']
         </div>
     </header>
 
+    <br><br>
+
     <div class="img_array">
-        <?php echo load_album_images($album_id, 0) ?>
+        <?php echo load_album_images($album_id, $page_id, $sort=$sort) ?>
     </div>
+
+
+    <div style="margin-left: 38%;">
+            <a href="albums.php?album_id=<?php echo $album_id ?>&page_id=<?php echo max(0, $page_id-1) ?>&sort=<?php echo $sort ?>" style="float:left; margin-right: 10px;">prev</a>
+            <p style="float:left; color: white;"> <?php echo $page_id ?></p>
+            <a href="albums.php?album_id=<?php echo $album_id ?>&page_id=<?php echo max(0, $page_id+1) ?>&sort=<?php echo $sort ?>" style="float:left; margin-left: 10px;">next</a>
+    </div>
+    <br><br>
 
 
     <footer>

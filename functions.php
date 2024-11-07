@@ -432,6 +432,9 @@ function load_album_images($album_id, $page_id, $sort="alphanumeric") {
     //sort
 
     //select
+    $count=50;
+    $offset=$count*$page_id;
+    $album_images = array_slice($album_images, $offset, $count);
 
     //display
     # create divs
