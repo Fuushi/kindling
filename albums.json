@@ -1,0 +1,7 @@
+[
+    {
+        "name" : "album_main",
+        "access" : ["admin"],
+        "dir" : "albums/album_main"
+    }
+]

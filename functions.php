@@ -135,8 +135,49 @@ function loadImageGrid() {
             $out = $out . '<a href="'. $target .'"><img src="' . "novels/". str_replace("/", "/dist_", $img) . '" alt="Image 1"></a>'; // Using htmlspecialchars for safety
         }
     }
-    
 
+
+    //get data json
+    $albums_str = file_get_contents("albums.json");
+    $albums_json = json_decode($albums_str, true); // decode the JSON into an associative array
+
+    
+    foreach ($albums_json as $album) {
+        // is user auth
+        if (isset($_SESSION['user_id'])) {
+            if (in_array($_SESSION['user_id'], $album['access'])) {
+                //user has access
+
+                //get image
+                // Load all files in album dir
+                $album_images = scandir($album['dir']);
+                $illegal_paths = array('.', '..', '...');
+
+                // Remove illegal files
+                $album_images = array_diff($album_images, $illegal_paths);
+
+                // Re-index the array to start from 0
+                $album_images = array_values($album_images);
+
+                // Select the first image
+                $cover_img = $album_images[0];
+
+                //set target
+                $target="albums.php?album_id=".$album['name']."&page_id=0&sort=alphanumeric"; 
+
+                // create div
+                $div = "<a href='" . $target . "'> <img style='outline-color: gray; outline-style: dashed; outline-width: 5px; border-radius: 8px;' src='albums/" . $album['name'] . "/" . $cover_img . "' alt='Image 1'></a>";
+
+                //append div to out
+                $out = $out.$div;
+
+            }
+        }
+
+
+        //
+
+    }
 
 
     return $out;
@@ -342,5 +383,69 @@ function get_progression($novelID, $userID) {
     }
     //if not logged in, returns page 0
     return 0;
+}
+
+function load_album_images($album_id, $page_id, $sort="alphanumeric") {
+    //load album(s)
+    $str = file_get_contents("albums.json");
+    $global_albums = json_decode($str, true);
+
+    //load album ref
+    $album=null;
+    foreach ($global_albums as $search_album) {
+        if ($search_album['name']===$album_id) {
+            $album=$search_album;
+        }
+    }
+
+    //validate
+    if ($album === null) {return "";}
+
+    //auth
+    if (isset($_SESSION['user_id'])) {
+        if (in_array($_SESSION['user_id'], $album['access'])) {
+            //auth (pass)
+        } else {return "Not Authorized";}
+    } else { return "Not Logged In";}
+
+   
+
+    //load files
+    $album_images = scandir($album['dir']);
+    $illegal_paths = array('.', '..', '...');
+
+    // Remove illegal files
+    $album_images = array_diff($album_images, $illegal_paths);
+
+    // Re-index the array to start from 0
+    $album_images = array_values($album_images);
+
+    //sort
+
+    //select
+
+    //display
+    # create divs
+    $out = "";
+
+    foreach ($album_images as $img) {
+        // Construct the image path
+        $img_path = "albums/" . $album_id . "/" . $img;
+        
+        // URL encode the image path to ensure it works correctly with GET parameters
+        $encoded_image_path = urlencode($img_path);
+        
+        // Link to the permission-checking script, passing the image path as a parameter
+        $target = "img_permission_checker.php?image_id=" . $encoded_image_path;
+    
+        // Create the image element, linking to the permission-checking script
+        $div = "<a href='" . $target . "'><img src='" . $target . "' alt='" . htmlspecialchars($img) . "' /></a>";
+    
+        // Append to $out
+        $out .= $div;
+    }
+
+    return $out;
+
 }
 ?>

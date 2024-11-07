@@ -1,0 +1,6 @@
+Order Deny,Allow
+Deny from all
+
+<Files "img_permission_checker.php">
+    Allow from all
+</Files>
