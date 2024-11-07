@@ -8,7 +8,32 @@ function isUserLoggedIn() {
 function userHasAccess($imageId) {
     // Implement your logic to check if the user has access to the image
     // This could involve checking the database for permissions
-    return true; // Change this to your actual permission logic
+
+    //load albums.json
+    $str = file_get_contents("albums.json");
+    $albums = json_decode($str, true); // decode the JSON into an associative array 
+
+    //extract album id from url
+    $array_explode = explode("/", $imageId);
+    $album_id = $array_explode[1];
+    
+
+    foreach ($albums as $album) {
+        if ($album['name'] === $album_id) {
+            //album found
+            //authenticate
+
+            // check if signed in
+            if (isset($_SESSION['user_id'])) {
+                if (in_array($_SESSION['user_id'], $album['access'])) {
+                    //return true if so
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false; // Change this to your actual permission logic
 }
 
 // Get the image ID from the request

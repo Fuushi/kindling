@@ -163,10 +163,19 @@ function loadImageGrid() {
                 $cover_img = $album_images[0];
 
                 //set target
-                $target="albums.php?album_id=".$album['name']."&page_id=0&sort=alphanumeric"; 
+                $url_target="albums.php?album_id=".$album['name']."&page_id=0&sort=alphanumeric"; 
 
-                // create div
-                $div = "<a href='" . $target . "'> <img style='outline-color: gray; outline-style: dashed; outline-width: 5px; border-radius: 8px;' src='albums/" . $album['name'] . "/" . $cover_img . "' alt='Image 1'></a>";
+                //set img target
+                $img_path = "albums/" . $album['name'] . "/" . $cover_img;
+        
+                // URL encode the image path to ensure it works correctly with GET parameters
+                $encoded_image_path = urlencode($img_path);
+                
+                // Link to the permission-checking script, passing the image path as a parameter
+                $img_target = "img_permission_checker.php?image_id=" . $encoded_image_path;
+            
+                // Create the image element, linking to the permission-checking script
+                $div = "<a href='" . $url_target . "'><img style='outline-color: gray; outline-style: dashed; outline-width: 5px; border-radius: 8px;' src='" . $img_target . "' alt='None' /></a>";
 
                 //append div to out
                 $out = $out.$div;
@@ -439,7 +448,7 @@ function load_album_images($album_id, $page_id, $sort="alphanumeric") {
         $target = "img_permission_checker.php?image_id=" . $encoded_image_path;
     
         // Create the image element, linking to the permission-checking script
-        $div = "<a href='" . $target . "'><img src='" . $target . "' alt='" . htmlspecialchars($img) . "' /></a>";
+        $div = "<a href='" . $target . "'><img src='" . $target . "' alt='None' /></a>";
     
         // Append to $out
         $out .= $div;
