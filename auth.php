@@ -15,7 +15,7 @@ function generateRandomString($length = 10) {
 function authenticate_login($username, $password, $ip) {
     
     //load database ;)
-    $str = file_get_contents("users.json");
+    $str = file_get_contents("logs/users.json");
     $json = json_decode($str, true); // decode the JSON into an associative array
 
     foreach($json as $key => $user) { // Use $key to reference the position in the array
@@ -40,7 +40,7 @@ function authenticate_login($username, $password, $ip) {
 
             #dump token to file
             $encode = json_encode($json, JSON_PRETTY_PRINT);
-            file_put_contents("users.json", $encode);
+            file_put_contents("logs/users.json", $encode);
 
             return true;
         }
@@ -52,7 +52,7 @@ function authenticate_login($username, $password, $ip) {
 function authenticate_by_token($token, $ip) {
 
     //load database ;)
-    $str = file_get_contents("users.json");
+    $str = file_get_contents("logs/users.json");
     $json = json_decode($str, true); // decode the JSON into an associative array
 
     //iterate until match found

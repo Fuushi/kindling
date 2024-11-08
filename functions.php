@@ -263,8 +263,8 @@ function enforce_size_limit($string, $max_size) {
 
 
 function bookmark($novelID, $pageID, $userID, $value) {
-    // Load users.json
-    $str = file_get_contents("users.json");
+    // Load logs/users.json
+    $str = file_get_contents("logs/users.json");
     $json = json_decode($str, true); // Decode the JSON into an associative array
 
     // With user id, set or remove bookmark
@@ -298,7 +298,7 @@ function bookmark($novelID, $pageID, $userID, $value) {
 
             // Dump to file
             $encode = json_encode($json, JSON_PRETTY_PRINT);
-            file_put_contents("users.json", $encode);
+            file_put_contents("logs/users.json", $encode);
 
             return true;
         }
@@ -310,8 +310,8 @@ function bookmark($novelID, $pageID, $userID, $value) {
 function is_bookmarked($novelID, $pageID, $userID) {
     #echo 'Checking bookmark';
 
-    // Load users.json
-    $str = file_get_contents("users.json");
+    // Load logs/users.json
+    $str = file_get_contents("logs/users.json");
     $json = json_decode($str, true); // Decode the JSON into an associative array
 
     // Search for the user by userID
@@ -341,8 +341,8 @@ function is_bookmarked($novelID, $pageID, $userID) {
 function update_progression($novelID, $pageID, $userID) {
     //updates progression for novel, page, user, returns success
 
-    // Load users.json
-    $str = file_get_contents("users.json");
+    // Load logs/users.json
+    $str = file_get_contents("logs/users.json");
     $json = json_decode($str, true); // Decode the JSON into an associative array
 
     // With user id, set or remove bookmark
@@ -358,7 +358,7 @@ function update_progression($novelID, $pageID, $userID) {
 
             // Dump to file
             $encode = json_encode($json, JSON_PRETTY_PRINT);
-            file_put_contents("users.json", $encode);
+            file_put_contents("logs/users.json", $encode);
 
             return true;
         }
@@ -369,8 +369,8 @@ function update_progression($novelID, $pageID, $userID) {
 function get_progression($novelID, $userID) {
     //get progression for novel, user, returns page
 
-    // Load users.json
-    $str = file_get_contents("users.json");
+    // Load logs/users.json
+    $str = file_get_contents("logs/users.json");
     $json = json_decode($str, true); // Decode the JSON into an associative array
 
     // With user id, set or remove bookmark

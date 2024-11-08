@@ -88,7 +88,7 @@ _Note: In future updates, this process will be automated._
 
 Currently, account creation must be done manually. Passwords are stored using SHA-256 hashing. To create a new account:
 
-1. Modify the `users.json` file with your username and hashed password.
+1. Modify the `logs/users.json` file with your username and hashed password.
 2. Hash your password using a tool like Python:
    ```python
    import hashlib
