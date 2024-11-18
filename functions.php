@@ -430,6 +430,11 @@ function load_album_images($album_id, $page_id, $sort="alphanumeric") {
     $album_images = array_values($album_images);
 
     //sort
+    if ($sort === "alphanumeric") {
+        natsort($album_images);
+    } elseif ($sort === "random") {
+        shuffle($album_images);
+    }
 
     //select
     $count=50;
@@ -459,5 +464,71 @@ function load_album_images($album_id, $page_id, $sort="alphanumeric") {
 
     return $out;
 
+}
+
+function create_account($username, $password1, $password2, $ip) {
+    //auth (firewall)
+        #check logs if for recent requests from ip for actions.php, flag or deny
+
+    //sanitize
+    #htmlspclchars
+    $username=sanitize_text($username);
+    $password1=sanitize_text($password1);
+    $password2=sanitize_text($password2);
+
+    //validate
+    if (!($password1===$password2)) {
+        echo "Passwords Do Not Match";
+        return false;
+    }
+
+    //hash password
+    $password_hash = hash("SHA256", $password1);
+
+    // Load logs/users.json
+    $str = file_get_contents("logs/users.json");
+    $json = json_decode($str, true); // Decode the JSON into an associative array
+
+    // Check for duplicate username
+    foreach ($json as $user) {
+        if ($user['username'] === $username) {
+            echo "Username already exists.";
+            return false;
+        }
+    }
+
+    //create user packet
+    $user_data = [
+        "username" => $username,
+        "password_hash" => $password_hash,
+        "tokens" => [],
+        "data" => [
+            "progression" => [],
+            "bookmarks" => [
+                "circe" => ["0"] // Predefined bookmark data
+            ],
+            "highlights" => [],
+            "connection_ips" => []
+        ]
+    ];
+
+
+    //append
+    array_push($json, $user_data);
+
+    //save to disc
+    if (file_put_contents("logs/users.json", json_encode($json, JSON_PRETTY_PRINT))) {
+        echo "Account created successfully.";
+    } else {
+        echo "Failed to save account.";
+    }
+
+    return true;
+}
+
+function sanitize_text($text) {
+    $trimmed_text=trim($text);
+    $safe_text = htmlspecialchars($trimmed_text, ENT_QUOTES, 'UTF-8');
+    return $safe_text;
 }
 ?>

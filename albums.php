@@ -49,9 +49,7 @@ $sort = $_GET['sort'];
 
 
     <footer>
-        <div class="container">
-            <p style="font-size:8px;"><?php echo test()?></p>
-        </div>
+
     </footer>
 </body>
 </html>

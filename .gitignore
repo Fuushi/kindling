@@ -112,4 +112,4 @@ tmp/
 
 #custom
 novels/
-users.json
+#logs/users.json

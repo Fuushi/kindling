@@ -9,7 +9,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 
 #is user logging in
-if (isset($_POST['password'])) {
+if (isset($_POST['password']) and (! isset($_POST['password2']))) {
     ##user logging in
     $success = authenticate_login($_POST['username'], $_POST['password'], "111.111.111.111");
 
