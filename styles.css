@@ -266,3 +266,25 @@ form button {
     object-fit: cover; /* Cover to maintain the aspect ratio */
     border-radius: 8px;
 }
+
+.list_item {
+    width: 80%;
+    margin-left: 10%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+.remove_item_style {
+    width: 15px;
+    height: 14px;
+    float: right;
+}
+
+.list_text {
+    width: 80%;
+    font-size: 14px;
+    color: gray;
+    text-decoration: none;
+}

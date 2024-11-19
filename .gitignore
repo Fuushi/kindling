@@ -112,4 +112,5 @@ tmp/
 
 #custom
 novels/
-#logs/users.json
+logs/users.json
+notes.md

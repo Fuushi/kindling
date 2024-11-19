@@ -42,7 +42,7 @@ if ($logged_in) {
                 <div style="width: 60%; height: 3px; background-color:#0f0f0f; margin: 10px auto; border-radius:2px;"></div>
                 <a style="text-decoration:none;" href=""><p style="color:gray; font-size: 15px;">Admin Settings</p></a>
                 <div style="width: 60%; height: 3px; background-color:#0f0f0f; margin: 10px auto; border-radius:2px;"></div>
-                <a style="text-decoration:none;" href=""><p style="color:gray; font-size: 15px;">Collection Settings</p></a>
+                <a style="text-decoration:none;" href="forms_page.php?form=collection_settings"><p style="color:gray; font-size: 15px;">Collection Settings</p></a>
                 <div style="width: 60%; height: 3px; background-color:#0f0f0f; margin: 10px auto; border-radius:2px;"></div>
                 <a style="text-decoration:none;" href=""><p style="color:gray; font-size: 15px;">Album Settings</p></a>
                 <div style="width: 60%; height: 3px; background-color:#0f0f0f; margin: 10px auto; border-radius:2px;"></div>

@@ -92,7 +92,9 @@ function loadImageGrid() {
         //get first image, from first content
 
         //get data json
-        $str = file_get_contents("novels/".$collection['contents'][0]."/data.json");
+        $id=$collection['contents'][0] ?? null;
+        if ($id === null) {continue;}
+        $str = file_get_contents("novels/".$id."/data.json");
         $json_collection = json_decode($str, true); // decode the JSON into an associative array
 
         //get path to img 0
@@ -531,4 +533,232 @@ function sanitize_text($text) {
     $safe_text = htmlspecialchars($trimmed_text, ENT_QUOTES, 'UTF-8');
     return $safe_text;
 }
+
+function serve_collections_list() {
+    //load collections json
+    $str = file_get_contents("collections.json");
+    $collections_json = json_decode($str, true); // decode the JSON into an associative array 
+
+    $div = "";
+    //iterate and build
+    foreach($collections_json as $collection) {
+        //extract name
+        $name = $collection['name'];
+
+        //built target
+        $target="forms_page.php?form=collection_modify&collection=".urlencode($name);
+        $remove_target="actions.php?action=remove_collection&collection=".urlencode($name)."&redirect=".urlencode("forms_page.php?form=collection_settings");
+        //build sub string
+        $sub='
+        <div class="list_menu">
+                <div class="list_item">
+                    <a class="list_text" href="' . $target . '"><p>'. $name .'</p></a>
+                    <a href="'. $remove_target .'"><img src="src/remove.png" alt="src/more.png" class="remove_item_style"></a>
+                </div>
+            </div>
+        <div style="width: 80%; height: 3px; background-color:#0f0f0f; margin: 10px auto; border-radius:2px;"></div>
+        ';
+        
+        //append to output div
+        $div = $div.$sub;
+    }
+
+    // declare create new literal
+    $new_target="forms_page.php?form=create_collection";
+    $div_create_new = '
+    <div class="list_menu">
+        <div class="list_item">
+            <a class="list_text" href="'. $new_target .'"><p>Create New Collection</p></a>
+            <a href="'. $new_target .'"><img src="src/add.png" alt="src/more.png" class="remove_item_style"></a>
+        </div>
+    </div>';
+
+    //append create new 
+    $div = $div.$div_create_new;
+
+    //return div as string 
+    return $div;
+}
+
+function get_novels() {
+    $path = "novels";
+
+    $files = scandir($path);
+
+    $files = array_diff(scandir($path), array('.', '..'));
+
+    $novels=[];
+    foreach ($files as $file) {
+        if (!str_contains($file, '.')) {
+            array_push($novels, $file);
+        }
+    }
+
+    return $novels;
+}
+
+function get_collection($collection_id) {
+    $str = file_get_contents("collections.json");
+    $collections_json = json_decode($str, true); // decode the JSON into an associative array 
+
+    //find collection
+    foreach($collections_json as $c) {
+        if ($c['name'] == $collection_id) {
+            $collection=$c;
+        }
+    }
+
+    //return collection, if exists
+    return $collection ?? null;
+}
+
+function truncateString($string, $n) {
+    if (strlen($string) > $n) {
+        return substr($string, 0, $n) . "...";
+    }
+    return $string;
+}
+
+function serve_collection_modify_list($collection_id) {
+    $MAX_CHAR_LEN=35;
+    //load novels
+    $novels = get_novels();
+
+    //load collection
+    $collection = get_collection($collection_id);
+    #validate collection
+    if ($collection == null) {return "Invalid Collection";}
+
+    //filter; remove IN from OUT 
+    $novels = array_diff($novels, $collection['contents']);
+
+    //declare div
+    $div = '';    
+
+    //construct IN
+    foreach ($collection['contents'] as $collection_novel) {
+        //
+        $redirect=urlencode("forms_page.php?form=collection_modify&collection=".$collection_id);
+        $target="actions.php?action=modify_collection&collection=".urlencode($collection_id)."&novel=".urlencode($collection_novel)."&value=false&redirect=".$redirect;
+        $name=truncateString($collection_novel, $MAX_CHAR_LEN);
+
+        $sample = '
+        <div class="list_item">
+            <a class="list_text" href="' . $target . '"><p>'. $name .'</p></a>
+            <a href="'.$target.'"><img src="src/remove.png" alt="src/more.png" class="remove_item_style"></a>
+        </div>
+        <div style="width: 80%; height: 3px; background-color:#0f0f0f; margin: 10px auto; border-radius:2px;"></div>';
+
+        $div = $div.$sample;
+
+    }
+
+    //construct OUT
+    foreach ($novels as $novel) {
+        //
+        $redirect=urlencode("forms_page.php?form=collection_modify&collection=".$collection_id);
+        $target="actions.php?action=modify_collection&collection=".urlencode($collection_id)."&novel=".urlencode($novel)."&value=true&redirect=".$redirect;
+        $name=truncateString($novel, $MAX_CHAR_LEN);
+
+        $sample = '
+        <div class="list_item">
+            <a class="list_text" href="' . $target . '"><p>'. $name .'</p></a>
+            <a href="'.$target.'"><img src="src/add.png" alt="src/more.png" class="remove_item_style"></a>
+        </div>
+        <div style="width: 80%; height: 3px; background-color:#0f0f0f; margin: 10px auto; border-radius:2px;"></div>';
+
+        $div = $div.$sample;
+
+    }
+
+    //return div
+    return $div;
+}
+
+function set_collection_status($collection_id, $novelID, $value) {
+    // Load collections
+    $str = file_get_contents("collections.json");
+    $collections_json = json_decode($str, true); // Decode the JSON into an associative array 
+
+    // Find and update the collection
+    foreach ($collections_json as &$collection) { // Use reference (&) to modify the original array
+        if ($collection['name'] == $collection_id) {
+            // Collection found
+            echo "collection found\n";
+
+            if ($value && !in_array($novelID, $collection['contents'])) {
+                // If setting true and not in array, append
+                array_push($collection['contents'], $novelID);
+            } else {
+                // If setting false, remove
+                echo "removing\n";
+                $collection['contents'] = array_values(
+                    array_diff($collection['contents'], [$novelID])
+                );
+            }
+            break; // Exit the loop once the desired collection is updated
+        }
+    }
+
+    // Save the updated collections back to the file
+    $updated_json = json_encode($collections_json, JSON_PRETTY_PRINT);
+    file_put_contents("collections.json", $updated_json);
+
+    return;
+}
+
+function remove_collection($collection_id) {
+    // Load collections
+    $str = file_get_contents("collections.json");
+    $collections_json = json_decode($str, true); // Decode the JSON into an associative array 
+
+    // Filter out the collection with the given name
+    $collections_json = array_filter($collections_json, function($collection) use ($collection_id) {
+        return $collection['name'] !== $collection_id; // Keep collections that do not match the name
+    });
+
+    // Reindex the array to maintain proper numeric keys
+    $collections_json = array_values($collections_json);
+
+    // Save the updated collections back to the file
+    $updated_json = json_encode($collections_json, JSON_PRETTY_PRINT);
+    file_put_contents("collections.json", $updated_json);
+
+    echo "Collection '$collection_id' has been removed.\n";
+
+    return;
+}
+
+function create_collection($collection_id) {
+    // Load collections
+    $str = file_get_contents("collections.json");
+    $collections_json = json_decode($str, true); // Decode the JSON into an associative array 
+
+    // Check if a collection with the same name already exists
+    foreach ($collections_json as $collection) {
+        if ($collection['name'] === $collection_id) {
+            echo "A collection with the name '$collection_id' already exists.\n";
+            return; // Exit the function if the collection name already exists
+        }
+    }
+
+    // Create the new collection
+    $new_collection = [
+        'name' => $collection_id,
+        'contents' => [] // Empty contents initially
+    ];
+
+    // Add the new collection to the collections array
+    $collections_json[] = $new_collection;
+
+    // Save the updated collections back to the file
+    $updated_json = json_encode($collections_json, JSON_PRETTY_PRINT);
+    file_put_contents("collections.json", $updated_json);
+
+    echo "Collection '$collection_id' has been created.\n";
+
+    return;
+}
+
+
 ?>
