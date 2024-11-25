@@ -1,6 +1,15 @@
 <?php 
 require 'auth.php';
 
+//run firewall before anything else
+$resp = firewall();
+if (!$resp) {
+    http_response_code(401); // Set the HTTP response status code
+    header('Content-Type: text/plain'); // Optional: Specify the response content type
+    echo 'Unauthorized access'; // Optional: Send an error message to the client
+    exit(); // Ensure script termination
+}
+
 ##session handling
 if (session_status() === PHP_SESSION_NONE) {
     session_start();

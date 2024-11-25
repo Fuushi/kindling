@@ -17,6 +17,9 @@ $action=$_GET['action'];
 //set redirect
 $redirect=urldecode($_GET['redirect']);
 
+//log
+log_form($action, $_POST);
+
 //perform action
 if ($action === "logout") {
   //log user out

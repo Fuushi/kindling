@@ -94,18 +94,11 @@ function get_novels() {
 }
 
 function get_collection($collection_id) {
-    $str = file_get_contents("collections.json");
-    $collections_json = json_decode($str, true); // decode the JSON into an associative array 
+    //load collections data
+    $collections_json = get_json("collections.json"); // decode the JSON into an associative array 
 
-    //find collection
-    foreach($collections_json as $c) {
-        if ($c['name'] == $collection_id) {
-            $collection=$c;
-        }
-    }
-
-    //return collection, if exists
-    return $collection ?? null;
+    //find collection, return
+    return search_array_key($collections_json, 'name', $collection_id) ?? null;
 }
 
 function serve_collection($collection_id) {
