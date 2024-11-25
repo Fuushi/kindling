@@ -10,6 +10,7 @@ if (!$resp) {
     exit(); // Ensure script termination
 }
 
+
 ##session handling
 if (session_status() === PHP_SESSION_NONE) {
     session_start();

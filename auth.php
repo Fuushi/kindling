@@ -180,6 +180,8 @@ function firewall() {
     $post_rate = 10; #1 request / second (15)
     $src_ip = $_SERVER['REMOTE_ADDR'];
 
+    //check l
+
 
     //filter by account
     //
@@ -187,9 +189,57 @@ function firewall() {
     //get active user
     $user = get_login_state_auth();
 
-    //load access_logs
     $str = file_get_contents("logs/access_logs.json");
     $json = json_decode($str, true); // decode the JSON into an associative array 
+
+    $str = file_get_contents("logs/security_logs.json");
+    $s_logs = json_decode($str, true); // decode the JSON into an associative array 
+
+    $changes_made = false; // Track whether any changes are made
+
+    // index security logs
+    $found=false;
+    foreach ($s_logs as $index => $s_src) {
+        if ($s_src['ip'] === $src_ip) {
+            $found=true;
+            // src found
+            $s_c = $s_src;
+
+            // Update the security log entry
+            $s_c['recent_request_times'] = [$now]; // Add current time to recent requests
+            if (!in_array($user, $s_c['historical_accounts'])) {
+                array_push($s_c['historical_accounts'], $user); // Add user to historical accounts if not already present
+            }
+
+            // Reassign the updated entry back to the array
+            $s_logs[$index] = $s_c;
+            $changes_made = true; // Indicate that changes have been made
+            break; // Exit the loop once the target IP is found and updated
+        }
+    }
+    if (!$found) {
+        $packet = 
+            [
+                'ip' => $src_ip,
+                'trust' => false,
+                'recent_request_times' => [$now],
+                'historical_accounts' => [$user],
+                "flags" => [
+                    "read_only" => false,
+                    "account_created" => false,
+                    "has_signed_in" => true
+                ],
+                "suspend_until" => null,
+                "ban" => false
+            ];
+
+        array_push($s_logs, $packet);
+        
+    }
+
+    // Write changes to the file only if changes were made
+    file_put_contents("logs/security_logs.json", json_encode($s_logs, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+
 
     //get user logs
     $user_logs = $json[$user] ?? [];
