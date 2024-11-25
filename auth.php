@@ -175,7 +175,7 @@ function log_form ($form_id, $form_data) {// Start session if it hasn't already 
 function firewall() {
     //constants
     $now = round(microtime(true) * 1000);
-    $sample = 10*1000;#(ms) (900*1000)
+    $sample = 900*1000;#(ms) (900*1000)
     $get_rate = 150; #10 requests / second (150)
     $post_rate = 10; #1 request / second (15)
     $src_ip = $_SERVER['REMOTE_ADDR'];
@@ -248,10 +248,10 @@ function firewall() {
     }
 
     //get rate limit for src
-    if ($get_count > $src_get_count) {return false;}
+    if ($src_get_count > $get_rate) {return false;}
 
     //post rate limit for src
-    if ($post_count > $src_get_count) {return false;}
+    if ($src_post_count > $post_rate) {return false;}
     
 
     return true;
