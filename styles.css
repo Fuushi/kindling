@@ -288,3 +288,28 @@ form button {
     color: gray;
     text-decoration: none;
 }
+
+.sort_options {
+    display: flex; /* Align children horizontally */
+}
+
+.sort_options a {
+    margin-top: 5px;
+    display: inline-block;
+    padding-top:3px;
+    margin-left: 10px;
+    padding: 1px; /* Box padding */
+    padding-left: 5px;
+    padding-right: 5px;
+    background-color: black; /* Box background color */
+    color: gray; /* Text color */
+    text-decoration: none; /* Remove underline */
+    border: 1px solid gray; /* Box border */
+    border-radius: 5px; /* Rounded corners */
+    text-align: center;
+}
+
+.sort_options a:hover {
+    background-color: #555; /* Highlight on hover */
+    color: #ddd; /* Change text color on hover */
+}

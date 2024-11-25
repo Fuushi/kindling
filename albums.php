@@ -34,6 +34,11 @@ $sort = $_GET['sort'];
     </header>
 
     <br><br>
+    <div class="sort_options">
+        <a href="albums.php?album_id=<?php echo $album_id ?>&page_id=<?php echo $page_id?>&sort=alphanumeric">Alphanumeric</a>
+        <a href="albums.php?album_id=<?php echo $album_id ?>&page_id=<?php echo $page_id?>&sort=random">Random</a>
+    </div>
+
 
     <div class="img_array">
         <?php echo load_album_images($album_id, $page_id, $sort=$sort) ?>
