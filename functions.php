@@ -4,234 +4,41 @@
 
 
 function test() {
-    return "Kindling 0.6 BETA. MIT License.";
+    return "Kindling 0.7 BETA. MIT License.";
 }
 
-function serve_collection($collection_id) {
-    //load collection data from ID
-
-    //load collections
-    $str = file_get_contents("collections.json");
-    $collections_json = json_decode($str, true); // decode the JSON into an associative array 
-
-    //find collection
-    $collection=null;
-    foreach($collections_json as $c) {
-        if ($c['name'] == $collection_id) {
-            $collection=$c;
-        }
-    }
-
-    //if not found, throw
-    if ($collection == null) {
-        return "No Collection Found";
-    }
-
-    //
-    $out = "";
-
-    //iterate through collection
-    foreach ($collection['contents'] as $file) {
-        // Check if the file does not contain '.py' or '.pdf'
-        if (!str_contains($file, '.')) {
-            //Parse
-
-            //
-
-            $str = file_get_contents("novels/".$file."/data.json");
-            $json = json_decode($str, true); // decode the JSON into an associative array
-
-            //get path to img 0
-            $img = $json['img_data'][0]['file_name'];
-
-            #echo str_replace($img, "/", "/dist_");
-
-            if (isset($_SESSION['user_id'])) {
-                $page_id = get_progression($file, $_SESSION['user_id']);
-            } else {
-                $page_id=0;
-            }
-            $target="serveNovel.php?novelID=".$file."&pageID=".$page_id; #make page dynamic, save to cache
-
-            //display
-            $out = $out . '<a href="'. $target .'"><img src="' . "novels/". str_replace("/", "/dist_", $img) . '" alt="Image 1"></a>'; // Using htmlspecialchars for safety
-        }
-    }
-
-    //return div
-    return $out;
+//primitive functions
+function get_json($json_path) {
+    $str = file_get_contents($json_path);
+    $json = json_decode($str, true); // decode the JSON into an associative array 
+    return $json;
 }
 
-function loadImageGrid() {
-    ##return '<img src="src/img1.jpg" alt="Image 1">';
-
-
-    $path = "novels";
-
-    $files = scandir($path);
-
-    $files = array_diff(scandir($path), array('.', '..'));
-
-    $out="";
-
-    //load collections
-    $str = file_get_contents("collections.json");
-    $json = json_decode($str, true); // decode the JSON into an associative array
-
-    //remove all books in collections from main array
-    //iterate collections
-    foreach ($json as $collection) {
-
-        //remove from main array
-        $files = array_diff($files, $collection['contents']);
-
-    }
-
-    //create refs for collections
-    foreach ($json as $collection) {
-        //get first image, from first content
-
-        //get data json
-        $id=$collection['contents'][0] ?? null;
-        if ($id === null) {continue;}
-        $str = file_get_contents("novels/".$id."/data.json");
-        $json_collection = json_decode($str, true); // decode the JSON into an associative array
-
-        //get path to img 0
-        $img = $json_collection['img_data'][1]['file_name'];
-
-        //set target
-        $target="collection.php?collection_id=".$collection['name']; 
-
-        // create div
-        $div = "<a href='" . $target . "'> <img style='outline-color: gray; outline-style: dashed; outline-width: 5px; border-radius: 8px;' src='novels/" . str_replace("/", "/dist_", $img) . "' alt='Image 1'></a>";
-
-        //append div to out
-        $out = $out.$div;
-    }
-
-
-    foreach ($files as $file) {
-        // Check if the file does not contain '.py' or '.pdf'
-        if (!str_contains($file, '.')) {
-            //Parse
-
-            //
-
-            $str = file_get_contents("novels/".$file."/data.json");
-            $json = json_decode($str, true); // decode the JSON into an associative array
-
-            //get path to img 0
-            $img = $json['img_data'][0]['file_name'];
-
-            #echo str_replace($img, "/", "/dist_");
-
-            if (isset($_SESSION['user_id'])) {
-                $page_id = get_progression($file, $_SESSION['user_id']);
-            } else {
-                $page_id=0;
-            }
-            $target="serveNovel.php?novelID=".$file."&pageID=".$page_id; #make page dynamic, save to cache
-
-            //display
-            $out = $out . '<a href="'. $target .'"><img src="' . "novels/". str_replace("/", "/dist_", $img) . '" alt="Image 1"></a>'; // Using htmlspecialchars for safety
-        }
-    }
-
-
-    //get data json
-    $albums_str = file_get_contents("albums.json");
-    $albums_json = json_decode($albums_str, true); // decode the JSON into an associative array
-
-    
-    foreach ($albums_json as $album) {
-        // is user auth
-        if (isset($_SESSION['user_id'])) {
-            if (in_array($_SESSION['user_id'], $album['access'])) {
-                //user has access
-
-                //get image
-                // Load all files in album dir
-                $album_images = scandir($album['dir']);
-                $illegal_paths = array('.', '..', '...');
-
-                // Remove illegal files
-                $album_images = array_diff($album_images, $illegal_paths);
-
-                // Re-index the array to start from 0
-                $album_images = array_values($album_images);
-
-                // Select the first image
-                $cover_img = $album_images[0];
-
-                //set target
-                $url_target="albums.php?album_id=".$album['name']."&page_id=0&sort=alphanumeric"; 
-
-                //set img target
-                $img_path = "albums/" . $album['name'] . "/" . $cover_img;
-        
-                // URL encode the image path to ensure it works correctly with GET parameters
-                $encoded_image_path = urlencode($img_path);
-                
-                // Link to the permission-checking script, passing the image path as a parameter
-                $img_target = "img_permission_checker.php?image_id=" . $encoded_image_path;
-            
-                // Create the image element, linking to the permission-checking script
-                $div = "<a href='" . $url_target . "'><img style='outline-color: gray; outline-style: dashed; outline-width: 5px; border-radius: 8px;' src='" . $img_target . "' alt='None' /></a>";
-
-                //append div to out
-                $out = $out.$div;
-
-            }
-        }
-
-
-        //
-
-    }
-
-
-    return $out;
+function put_json($json_path, $value) {
+    $encode = json_encode($value, JSON_PRETTY_PRINT);
+    file_put_contents($json_path, $encode);
 }
 
-function servePage($novelID, $pageID) {
-    
-    #load json
-    $str = file_get_contents("novels/".$novelID."/data.json");
+function sanitize_text($text) {
+    $trimmed_text=trim($text);
+    $safe_text = htmlspecialchars($trimmed_text, ENT_QUOTES, 'UTF-8');
+    return $safe_text;
+}
 
-    #parse
-    $json = json_decode($str, true); // decode the JSON into an associative array
-
-    #search json
-
-    #extract text
-    $text = $json['text'][$pageID];
-
-    #echo $pageID;
-    
-    #match images
-    $dis=false;
-    $images = $json['img_data'];
-    foreach ($images as $img) {
-        if ($img['page_number'] == $pageID) {
-            $dis = $img;
+function search_array_key($array, $key, $value) {
+    foreach($array as $k) {
+        if ($k[$key] == $value) {
+            return $k;
         }
     }
+    return null;
+}
 
-    #echo $dis['file_name'];
-
-    #format
-    $ret = "";
-    if ($dis == true) {
-        $ret = $ret.'<p class="bodyText">'.$text.'</p>';
-        $ret = $ret.'<img class="imgDisp" src="novels/'.$dis['file_name'].'">';
+function get_login_state() {
+    if (isset($_SESSION['user_id'])) {
+        return $_SESSION['user_id'];
     }
-    else {
-        $ret = $ret.'<p>'.$text.'</p>';
-    }
-
-    #send
-    return $ret;
+    return null;
 }
 
 function get_metadata($novelID) {
@@ -262,12 +69,193 @@ function enforce_size_limit($string, $max_size) {
     }
 }
 
+function truncateString($string, $n) {
+    if (strlen($string) > $n) {
+        return substr($string, 0, $n) . "...";
+    }
+    return $string;
+}
 
+function get_novels() {
+    $path = "novels";
+
+    $files = scandir($path);
+
+    $files = array_diff(scandir($path), array('.', '..'));
+
+    $novels=[];
+    foreach ($files as $file) {
+        if (!str_contains($file, '.')) {
+            array_push($novels, $file);
+        }
+    }
+
+    return $novels;
+}
+
+function get_collection($collection_id) {
+    $str = file_get_contents("collections.json");
+    $collections_json = json_decode($str, true); // decode the JSON into an associative array 
+
+    //find collection
+    foreach($collections_json as $c) {
+        if ($c['name'] == $collection_id) {
+            $collection=$c;
+        }
+    }
+
+    //return collection, if exists
+    return $collection ?? null;
+}
+
+function serve_collection($collection_id) {
+    //load collection data from ID
+
+    //load collections
+    $collections_json = get_json("collections.json");
+
+    //find collection
+    $collection = search_array_key($collections_json, "name", $collection_id);
+
+    //if not found, throw
+    if ($collection == null) {return "No Collection Found";}
+
+
+    //iterate through collection
+    $out = "";
+    foreach ($collection['contents'] as $file) {
+        // Check if the file does not contain '.py' or '.pdf'
+        if (!str_contains($file, '.')) {
+
+            //load metadata for novel
+            $json = get_json("novels/".$file."/data.json");
+
+            //build div
+            $img = $json['img_data'][0]['file_name'];
+            $page_id = get_progression($file, get_login_state());
+            $target="serveNovel.php?novelID=".$file."&pageID=".$page_id; #make page dynamic, save to cache
+
+            //display
+            $out = $out . '<a href="'. $target .'"><img src="' . "novels/". str_replace("/", "/dist_", $img) . '" alt="Image 1"></a>'; // Using htmlspecialchars for safety
+        }
+    }
+    //return divs
+    return $out;
+}
+
+function loadImageGrid() {
+    //get novels
+    $files = get_novels();
+
+    //load collections
+    $json = get_json("collections.json");
+
+    //remove all books in all collections from main array
+    foreach ($json as $collection) {
+        $files = array_diff($files, $collection['contents']);
+    }
+
+    //create refs for collections
+    $out="";
+    foreach ($json as $collection) {
+        //get data json
+        $id=$collection['contents'][0] ?? null;
+        if ($id === null) {continue;}
+        $json_collection = get_json("novels/".$id."/data.json");
+
+        //create div
+        $img = $json_collection['img_data'][1]['file_name'];
+        $target="collection.php?collection_id=".$collection['name']; 
+        $div = "<a href='" . $target . "'> <img style='outline-color: gray; outline-style: dashed; outline-width: 5px; border-radius: 8px;' src='novels/" . str_replace("/", "/dist_", $img) . "' alt='Image 1'></a>";
+
+        //append div to out
+        $out = $out.$div;
+    }
+
+    //create refs for novels
+    foreach ($files as $file) {
+
+        //load novel metadata
+        $json = get_json("novels/".$file."/data.json");
+
+        //get path to img 0
+        $img = $json['img_data'][0]['file_name'];
+
+        //get page ID
+        $page_id = get_progression($file, get_login_state());
+
+        //build div
+        $target="serveNovel.php?novelID=".$file."&pageID=".$page_id; #make page dynamic, save to cache
+
+        //display
+        $out = $out . '<a href="'. $target .'"><img src="' . "novels/". str_replace("/", "/dist_", $img) . '" alt="Image 1"></a>'; // Using htmlspecialchars for safety
+    }
+
+    //get albums json
+    $albums_json = get_json("albums.json");
+    
+    //iterate through albums and build divs
+    foreach ($albums_json as $album) {
+        // is user auth
+        if (get_login_state()) {
+            if (in_array(get_login_state(), $album['access'])) {
+                //user has access
+
+                // Load all files in album dir
+                $album_images = scandir($album['dir']);
+
+                // Remove illegal files
+                $illegal_paths = array('.', '..', '...');
+                $album_images = array_diff($album_images, $illegal_paths);
+                $album_images = array_values($album_images);
+
+                // Select the first image
+                $cover_img = $album_images[0];
+
+                //build div
+                $url_target="albums.php?album_id=".$album['name']."&page_id=0&sort=alphanumeric"; 
+                $img_path = "albums/" . $album['name'] . "/" . $cover_img;
+                $encoded_image_path = urlencode($img_path);
+                $img_target = "img_permission_checker.php?image_id=" . $encoded_image_path;
+                $div = "<a href='" . $url_target . "'><img style='outline-color: gray; outline-style: dashed; outline-width: 5px; border-radius: 8px;' src='" . $img_target . "' alt='None' /></a>";
+
+                //append div to out
+                $out = $out.$div;
+            }
+        }
+    }
+    return $out;
+}
+
+function servePage($novelID, $pageID) {
+    
+    #load json
+    $json = get_json("novels/".$novelID."/data.json");
+
+    #extract text
+    $text = $json['text'][$pageID] ?? null;
+    
+    #match images
+    $dis=false;
+    $images = $json['img_data'];
+    foreach ($images as $img) {
+        if ($img['page_number'] == $pageID) {
+            $dis = $img;
+        }
+    }
+
+    #format page contents
+    $ret="";
+    $ret = $ret.'<p class="bodyText">'.$text.'</p>';
+    if ($dis) {$ret = $ret.'<img class="imgDisp" src="novels/'.$dis['file_name'].'">';}
+
+    #return text div
+    return $ret;
+}
 
 function bookmark($novelID, $pageID, $userID, $value) {
     // Load logs/users.json
-    $str = file_get_contents("logs/users.json");
-    $json = json_decode($str, true); // Decode the JSON into an associative array
+    $json = get_json("logs/users.json");
 
     // With user id, set or remove bookmark
     foreach($json as $key => $user) { // Use $key to reference the position in the array
@@ -276,19 +264,12 @@ function bookmark($novelID, $pageID, $userID, $value) {
             // Check if there's a bookmarks array for the novel
             if (isset($user['data']['bookmarks'][$novelID])) {
                 // If $value is true, add the bookmark
-                if ($value) {
-                    // If pageID not in array, add it
-                    if (!in_array($pageID, $user['data']['bookmarks'][$novelID])) {
-                        array_push($user['data']['bookmarks'][$novelID], $pageID);
-                    }
-                } else {
+                if ($value && !in_array($pageID, $user['data']['bookmarks'][$novelID])) {
+                    array_push($user['data']['bookmarks'][$novelID], $pageID);
+                } elseif (($keyIndex = array_search($pageID, $user['data']['bookmarks'][$novelID])) !== false) {
                     // If $value is false, remove the pageID from the bookmarks array
-                    if (($keyIndex = array_search($pageID, $user['data']['bookmarks'][$novelID])) !== false) {
-                        unset($user['data']['bookmarks'][$novelID][$keyIndex]);
-
-                        // Reindex the array after unset
-                        $user['data']['bookmarks'][$novelID] = array_values($user['data']['bookmarks'][$novelID]);
-                    }
+                    unset($user['data']['bookmarks'][$novelID][$keyIndex]);
+                    $user['data']['bookmarks'][$novelID] = array_values($user['data']['bookmarks'][$novelID]);
                 }
             } elseif ($value) {
                 // If $value is true and no bookmark array exists, create it
@@ -299,8 +280,7 @@ function bookmark($novelID, $pageID, $userID, $value) {
             $json[$key] = $user;
 
             // Dump to file
-            $encode = json_encode($json, JSON_PRETTY_PRINT);
-            file_put_contents("logs/users.json", $encode);
+            put_json("logs/users.json", $json);
 
             return true;
         }
@@ -310,17 +290,12 @@ function bookmark($novelID, $pageID, $userID, $value) {
 
 
 function is_bookmarked($novelID, $pageID, $userID) {
-    #echo 'Checking bookmark';
-
     // Load logs/users.json
-    $str = file_get_contents("logs/users.json");
-    $json = json_decode($str, true); // Decode the JSON into an associative array
+    $json = get_json("logs/users.json"); //this function could be optimized more, however it wont be
 
     // Search for the user by userID
     foreach($json as $user) {
         if ($userID == $user['username']) {
-            #echo "User Found";
-
             // Check if the user has bookmarks for the given novel
             if (isset($user['data']['bookmarks'][$novelID])) {
                 // Check if the pageID is in the bookmarks array
@@ -330,38 +305,31 @@ function is_bookmarked($novelID, $pageID, $userID) {
                 }
             }
 
-            // If no bookmark was found for the given pageID
-            #echo "Bookmark does not exist.";
+            // If no bookmark was found for the given pageID, return false
             return false;
         }
     }
-    
-    #echo "User not Found";
+    //user not found, return false
     return false;
 }
 
 function update_progression($novelID, $pageID, $userID) {
     //updates progression for novel, page, user, returns success
-
     // Load logs/users.json
-    $str = file_get_contents("logs/users.json");
-    $json = json_decode($str, true); // Decode the JSON into an associative array
+    $json = get_json("logs/users.json");
 
     // With user id, set or remove bookmark
     foreach($json as $key => $user) { // Use $key to reference the position in the array
         if ($userID == $user['username']) {
             #user found
-
-            #modify data
+            //modify data
             $user['data']['progression'][$novelID]=$pageID;
 
             // Update the original json array
             $json[$key] = $user;
 
             // Dump to file
-            $encode = json_encode($json, JSON_PRETTY_PRINT);
-            file_put_contents("logs/users.json", $encode);
-
+            put_json("logs/users.json", $json);
             return true;
         }
     }
@@ -370,26 +338,16 @@ function update_progression($novelID, $pageID, $userID) {
 
 function get_progression($novelID, $userID) {
     //get progression for novel, user, returns page
+    if (!$userID) {return 0;}
 
     // Load logs/users.json
-    $str = file_get_contents("logs/users.json");
-    $json = json_decode($str, true); // Decode the JSON into an associative array
+    $json = get_json("logs/users.json");
 
     // With user id, set or remove bookmark
     foreach($json as $key => $user) { // Use $key to reference the position in the array
         if ($userID == $user['username']) {
-            //user found
-
             //get data
-            if (isset($user['data']['progression'][$novelID])) {
-                $page = $user['data']['progression'][$novelID];
-            } else {
-                return 0;
-            }
-            
-
-            //return
-            return $page;
+            return $user['data']['progression'][$novelID] ?? 0;
         }
     }
     //if not logged in, returns page 0
@@ -398,52 +356,34 @@ function get_progression($novelID, $userID) {
 
 function load_album_images($album_id, $page_id, $sort="alphanumeric") {
     //load album(s)
-    $str = file_get_contents("albums.json");
-    $global_albums = json_decode($str, true);
+    $global_albums = get_json("albums.json");
 
-    //load album ref
-    $album=null;
-    foreach ($global_albums as $search_album) {
-        if ($search_album['name']===$album_id) {
-            $album=$search_album;
-        }
-    }
+    //select album
+    $album = search_array_key($global_albums, "name", $album_id);
 
     //validate
     if ($album === null) {return "";}
 
     //auth
-    if (isset($_SESSION['user_id'])) {
-        if (in_array($_SESSION['user_id'], $album['access'])) {
-            //auth (pass)
-        } else {return "Not Authorized";}
-    } else { return "Not Logged In";}
-
-   
+    if (!in_array(get_login_state(), $album['access'])) {return "Not Authorized";}
 
     //load files
     $album_images = scandir($album['dir']);
-    $illegal_paths = array('.', '..', '...');
-
+    
     // Remove illegal files
+    $illegal_paths = array('.', '..', '...');
     $album_images = array_diff($album_images, $illegal_paths);
-
-    // Re-index the array to start from 0
     $album_images = array_values($album_images);
 
-    //sort
-    if ($sort === "alphanumeric") {
-        natsort($album_images);
-    } elseif ($sort === "random") {
-        shuffle($album_images);
-    }
+    //sort according to specified algorithm
+    if ($sort === "alphanumeric") {natsort($album_images);} 
+    elseif ($sort === "random") {shuffle($album_images);}
 
     //select
     $count=50;
     $offset=$count*$page_id;
     $album_images = array_slice($album_images, $offset, $count);
 
-    //display
     # create divs
     $out = "";
 
@@ -488,15 +428,11 @@ function create_account($username, $password1, $password2, $ip) {
     $password_hash = hash("SHA256", $password1);
 
     // Load logs/users.json
-    $str = file_get_contents("logs/users.json");
-    $json = json_decode($str, true); // Decode the JSON into an associative array
+    $json = get_json("logs/users.json");
 
     // Check for duplicate username
     foreach ($json as $user) {
-        if ($user['username'] === $username) {
-            echo "Username already exists.";
-            return false;
-        }
+        if ($user['username'] === $username) { return false; }
     }
 
     //create user packet
@@ -519,28 +455,17 @@ function create_account($username, $password1, $password2, $ip) {
     array_push($json, $user_data);
 
     //save to disc
-    if (file_put_contents("logs/users.json", json_encode($json, JSON_PRETTY_PRINT))) {
-        echo "Account created successfully.";
-    } else {
-        echo "Failed to save account.";
-    }
-
+    put_json("logs/users.json", $json);
     return true;
 }
 
-function sanitize_text($text) {
-    $trimmed_text=trim($text);
-    $safe_text = htmlspecialchars($trimmed_text, ENT_QUOTES, 'UTF-8');
-    return $safe_text;
-}
-
 function serve_collections_list() {
+    //this function may be fundamentally unfixable, lord have mercy, lord hath humbled me
     //load collections json
-    $str = file_get_contents("collections.json");
-    $collections_json = json_decode($str, true); // decode the JSON into an associative array 
+    $collections_json = get_json("collections.json");
 
     $div = "";
-    //iterate and build
+    //iterate and build div
     foreach($collections_json as $collection) {
         //extract name
         $name = $collection['name'];
@@ -578,45 +503,6 @@ function serve_collections_list() {
 
     //return div as string 
     return $div;
-}
-
-function get_novels() {
-    $path = "novels";
-
-    $files = scandir($path);
-
-    $files = array_diff(scandir($path), array('.', '..'));
-
-    $novels=[];
-    foreach ($files as $file) {
-        if (!str_contains($file, '.')) {
-            array_push($novels, $file);
-        }
-    }
-
-    return $novels;
-}
-
-function get_collection($collection_id) {
-    $str = file_get_contents("collections.json");
-    $collections_json = json_decode($str, true); // decode the JSON into an associative array 
-
-    //find collection
-    foreach($collections_json as $c) {
-        if ($c['name'] == $collection_id) {
-            $collection=$c;
-        }
-    }
-
-    //return collection, if exists
-    return $collection ?? null;
-}
-
-function truncateString($string, $n) {
-    if (strlen($string) > $n) {
-        return substr($string, 0, $n) . "...";
-    }
-    return $string;
 }
 
 function serve_collection_modify_list($collection_id) {
@@ -677,21 +563,17 @@ function serve_collection_modify_list($collection_id) {
 
 function set_collection_status($collection_id, $novelID, $value) {
     // Load collections
-    $str = file_get_contents("collections.json");
-    $collections_json = json_decode($str, true); // Decode the JSON into an associative array 
+    $collections_json = get_json("collections.json"); // Decode the JSON into an associative array 
 
     // Find and update the collection
     foreach ($collections_json as &$collection) { // Use reference (&) to modify the original array
         if ($collection['name'] == $collection_id) {
-            // Collection found
-            echo "collection found\n";
-
+            //collection found, modify
             if ($value && !in_array($novelID, $collection['contents'])) {
                 // If setting true and not in array, append
                 array_push($collection['contents'], $novelID);
             } else {
                 // If setting false, remove
-                echo "removing\n";
                 $collection['contents'] = array_values(
                     array_diff($collection['contents'], [$novelID])
                 );
@@ -701,16 +583,13 @@ function set_collection_status($collection_id, $novelID, $value) {
     }
 
     // Save the updated collections back to the file
-    $updated_json = json_encode($collections_json, JSON_PRETTY_PRINT);
-    file_put_contents("collections.json", $updated_json);
-
+    put_json("collections.json", $collections_json);
     return;
 }
 
 function remove_collection($collection_id) {
     // Load collections
-    $str = file_get_contents("collections.json");
-    $collections_json = json_decode($str, true); // Decode the JSON into an associative array 
+    $collections_json = get_json("collections.json");
 
     // Filter out the collection with the given name
     $collections_json = array_filter($collections_json, function($collection) use ($collection_id) {
@@ -721,26 +600,17 @@ function remove_collection($collection_id) {
     $collections_json = array_values($collections_json);
 
     // Save the updated collections back to the file
-    $updated_json = json_encode($collections_json, JSON_PRETTY_PRINT);
-    file_put_contents("collections.json", $updated_json);
-
-    echo "Collection '$collection_id' has been removed.\n";
-
+    put_json("collections.json", $collections_json);
     return;
 }
 
 function create_collection($collection_id) {
     // Load collections
-    $str = file_get_contents("collections.json");
-    $collections_json = json_decode($str, true); // Decode the JSON into an associative array 
+    
+    $collections_json = get_json("collections.json");
 
-    // Check if a collection with the same name already exists
-    foreach ($collections_json as $collection) {
-        if ($collection['name'] === $collection_id) {
-            echo "A collection with the name '$collection_id' already exists.\n";
-            return; // Exit the function if the collection name already exists
-        }
-    }
+    // Check if a collection with the same name already exists (TODO test)
+    if (search_array_key($collections_json, "name", $collection_id)) {return;}
 
     // Create the new collection
     $new_collection = [
@@ -752,13 +622,8 @@ function create_collection($collection_id) {
     $collections_json[] = $new_collection;
 
     // Save the updated collections back to the file
-    $updated_json = json_encode($collections_json, JSON_PRETTY_PRINT);
-    file_put_contents("collections.json", $updated_json);
-
-    echo "Collection '$collection_id' has been created.\n";
-
+    put_json("collections.json", $collections_json);
     return;
 }
-
 
 ?>
