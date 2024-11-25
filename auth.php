@@ -176,8 +176,8 @@ function firewall() {
     //constants
     $now = round(microtime(true) * 1000);
     $sample = 900*1000;#(ms) (900*1000)
-    $get_rate = 150; #10 requests / second (150)
-    $post_rate = 10; #1 request / second (15)
+    $get_rate = 15*60*10; #10 requests / second (150)
+    $post_rate = 15; #1 request / minute (15)
     $src_ip = $_SERVER['REMOTE_ADDR'];
 
     //check l

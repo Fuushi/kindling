@@ -11,6 +11,9 @@ if (! (isset($_GET['action']) and isset($_GET['redirect']))) {
   return;
 }
 
+//get user
+$user = get_login_state();
+
 //get action
 $action=$_GET['action'];
 
@@ -41,6 +44,7 @@ elseif ($action === "signin") {
 
 } elseif ($action === "modify_collection") {
   //extract args
+  if (!($user === "admin")) {return 401;}
   $collection=urldecode($_GET['collection'] ?? null);
   $novel=urldecode($_GET['novel'] ?? null);
   $value = $_GET['value'] ?? null;
@@ -60,6 +64,7 @@ elseif ($action === "signin") {
   //call func
   set_collection_status($collection, $novel, $value);
 } elseif ($action === "remove_collection") {
+  if (!($user === "admin")) {return 401;}
   //remove collection
 
   //decode
@@ -68,6 +73,7 @@ elseif ($action === "signin") {
   //call function
   remove_collection($collection_id);
 } elseif ($action == "create_collection") {
+  if (!($user === "admin")) {return 401;}
   echo "Creating Collection";
   $collection_id = $_POST['collection_name'] ?? null;
   if ($collection_id == null) {
