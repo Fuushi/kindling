@@ -46,8 +46,8 @@ $metadata = get_metadata($novelID);
                 <img class="imgDispAbout" style="width: 80%;height: 80%;object-fit:contain;overflow: hidden;margin: 10%;margin-top: 3%;margin-bottom: 3%;"src="./novels/<?php echo $novelID?>/<?php echo str_replace(" ", "", $novelID)?>_page1_img1.jpeg" alt="Oops! The image ran away!">
             </a>
         </h1>
-        <p class="descriptor">Author: <?php echo $metadata['author']?></p>
-        <p class="descriptor">Page Count: <?php echo $metadata['page_count']?></p>
+        <p class="descriptor" style="font-size: 13px;padding-left: 10%;color: gray;">Author: <?php echo $metadata['author']?></p>
+        <p class="descriptor" style="font-size: 13px;padding-left: 10%;color: gray;">Page Count: <?php echo $metadata['page_count']?></p>
         <p class="descriptor" style="font-size: 13px;padding-left: 10%;color: gray;">Language: English...</p>
     </div>
 
