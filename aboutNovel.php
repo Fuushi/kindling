@@ -5,6 +5,9 @@ include 'on_connect.php';
 
 $novelID=$_GET['novelID'];
 $pageID = $_GET['pageID'];
+
+//get metadata
+$metadata = get_metadata($novelID);
 ?>
 
 
@@ -37,15 +40,15 @@ $pageID = $_GET['pageID'];
         <br><br>
         <h1 style="color: grey; font-size: 1.2rem;">
 
-            <center><?php echo str_replace("_", " ", $novelID) ?></center>
+            <center><?php echo $metadata['title'] ?></center>
 
             <a href="./serveNovel.php?novelID=<?php echo $novelID?>&pageID=<?php echo $pageID?>">
                 <img class="imgDispAbout" style="width: 80%;height: 80%;object-fit:contain;overflow: hidden;margin: 10%;margin-top: 3%;margin-bottom: 3%;"src="./novels/<?php echo $novelID?>/<?php echo str_replace(" ", "", $novelID)?>_page1_img1.jpeg" alt="Oops! The image ran away!">
             </a>
         </h1>
-        <p class="descriptor">Author: Lorem ipsum</p>
-        <p class="descriptor">Page Count: i</p>
-        <p class="descriptor">Language: Sengali</p>
+        <p class="descriptor">Author: <?php echo $metadata['author']?></p>
+        <p class="descriptor">Page Count: <?php echo $metadata['page_count']?></p>
+        <p class="descriptor" style="font-size: 13px;padding-left: 10%;color: gray;">Language: English...</p>
     </div>
 
     <footer>
