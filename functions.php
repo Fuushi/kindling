@@ -126,7 +126,7 @@ function serve_collection($collection_id) {
             //build div
             $img = $json['img_data'][0]['file_name'];
             $page_id = get_progression($file, get_login_state());
-            $target="serveNovel.php?novelID=".$file."&pageID=".$page_id; #make page dynamic, save to cache
+            $target="aboutNovel.php?novelID=".$file."&pageID=".$page_id; #make page dynamic, save to cache
 
             //display
             $out = $out . '<a href="'. $target .'"><img src="' . "novels/". str_replace("/", "/dist_", $img) . '" alt="Image 1"></a>'; // Using htmlspecialchars for safety
@@ -178,7 +178,7 @@ function loadImageGrid() {
         $page_id = get_progression($file, get_login_state());
 
         //build div
-        $target="serveNovel.php?novelID=".$file."&pageID=".$page_id; #make page dynamic, save to cache
+        $target="aboutNovel.php?novelID=".$file."&pageID=".$page_id; #make page dynamic, save to cache
 
         //display
         $out = $out . '<a href="'. $target .'"><img src="' . "novels/". str_replace("/", "/dist_", $img) . '" alt="Image 1"></a>'; // Using htmlspecialchars for safety

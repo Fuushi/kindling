@@ -4,7 +4,7 @@ include 'functions.php';
 include 'on_connect.php';
 
 $novelID=$_GET['novelID'];
-
+$pageID = $_GET['pageID'];
 ?>
 
 
@@ -33,13 +33,15 @@ $novelID=$_GET['novelID'];
     </header>
 
     <div class="content container">
-        <a href="A_Container, clicking on img should go to active page"></a>
+        
         <br><br>
         <h1 style="color: grey; font-size: 1.2rem;">
 
-            <center><?php echo $novelID ?></center>
+            <center><?php echo str_replace("_", " ", $novelID) ?></center>
 
-            <img class="imgDispAbout" src="./novels/<?php echo $novelID?>/<?php echo $novelID?>_page1_img1.jpeg" alt="Oops! The image ran away!">
+            <a href="./serveNovel.php?novelID=<?php echo $novelID?>&pageID=<?php echo $pageID?>">
+                <img class="imgDispAbout" src="./novels/<?php echo $novelID?>/<?php echo str_replace(" ", "", $novelID)?>_page1_img1.jpeg" alt="Oops! The image ran away!">
+            </a>
         </h1>
         <p class="descriptor">Author: Lorem ipsum</p>
         <p class="descriptor">Page Count: i</p>
