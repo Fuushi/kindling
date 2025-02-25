@@ -40,7 +40,7 @@ $pageID = $_GET['pageID'];
             <center><?php echo str_replace("_", " ", $novelID) ?></center>
 
             <a href="./serveNovel.php?novelID=<?php echo $novelID?>&pageID=<?php echo $pageID?>">
-                <img class="imgDispAbout" src="./novels/<?php echo $novelID?>/<?php echo str_replace(" ", "", $novelID)?>_page1_img1.jpeg" alt="Oops! The image ran away!">
+                <img class="imgDispAbout" style="width: 80%;height: 80%;object-fit:contain;overflow: hidden;margin: 10%;margin-top: 3%;margin-bottom: 3%;"src="./novels/<?php echo $novelID?>/<?php echo str_replace(" ", "", $novelID)?>_page1_img1.jpeg" alt="Oops! The image ran away!">
             </a>
         </h1>
         <p class="descriptor">Author: Lorem ipsum</p>
