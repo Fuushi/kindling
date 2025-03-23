@@ -9,75 +9,25 @@ $logged_in = (isset($_SESSION['session_token']));
 
 $form_id = $_GET['form'] ?? "";
 
-
-
-$signin_page='
-<center>
-    <p style="margin-top: 200px;">Sign in</p>
-    <form action="actions.php?action=signin&redirect=accounts.php" method="POST" style="width:100%;">
-        <input id="username" name="username" type="text" placeholder="Username" style="color: gray; margin:40px; width: 80%; background-color: #0f0f0f;" />
-        <input id="password" name="password" type="password" placeholder="Password" style="color: gray; margin:40px; width: 80%; background-color: #0f0f0f; margin-top: -30px;" />
-        <input id="password2" name="password2" type="password" placeholder="Re-enter Password" style="color: gray; margin:40px; width: 80%; background-color: #0f0f0f; margin-top: -30px; margin-bottom: 8px;" />
-        <div>
-            <center>
-            <input type="submit" style="position:relative; color: gray; width: 20%; background-color:#0f0f0f; margin-bottom: 40px;" />
-            </center>
-        </div>
-    </form>
-
-    <a href="accounts.php?form=sign_in">Already have an Account? Login</a>
-</center>';
-
 $page="";
 if ($form_id === "sign_in") {
-    $page=$signin_page;
-} elseif ($form_id === "collection_settings") {
-    $page='
-    <div>
-        <br><br>
-        <center>
-            <p style="color:gray; margin-bottom: 40px;">Collections</p>
-        </center>
-        <div class="list_menu">
-            '. serve_collections_list() .'
-        </div>
-    </div>
-';
-} elseif ($form_id === "collection_modify") {
-    $collection_id = urldecode($_GET['collection']) ?? null;
-    $fill = serve_collection_modify_list($collection_id);
-    $page = '
-    <div>
-        <br><br>
-        <center>
-            <p style="color:gray; margin-bottom: 40px;">'. $collection_id .'</p>
-        </center>
-        
 
-        <div class="list_menu<<function call in here">
-            '. $fill .'    
-        </div>
-    </div>
-    ';
+    //include signin sublet
+    include 'sublets/sign_in_sublet.php';
+
+} elseif ($form_id === "collection_settings") {
+    //include collection settings sublet
+    include 'sublets/collection_settings_sublet.php';
+
+} elseif ($form_id === "collection_modify") {
+    //include collection modify sublet
+    include 'sublets/collection_modify_sublet.php';
 }
 
 elseif ($form_id === "create_collection") {
-    //
-    #$collection_id = urldecode($_GET['collection']) ?? null;
-    $redirect=urlencode('forms_page.php?form=collection_settings');
-    $page='
-        <div>
-        <center>
-        <p style="margin-top: 250px; color:white">New Collection</p>
-        <form action="actions.php?action=create_collection'.'&redirect='.$redirect.'" method="POST" style="width:100%;">
-        <input id="collection_name" name="collection_name" type="text" placeholder="Collection Name..." style="color: gray; margin:40px; width: 80%; background-color:#0f0f0f;" />
-            <center>
-            <input type="submit" style="position:relative; color: gray; width: 20%; background-color:#0f0f0f; margin-bottom: 40px;" />
-            </center>
-        </div>
-        </center>
-        </form>
-    </div>';
+    //include collection create sublet
+    include 'sublets/collection_create_sublet.php';
+    
 }
 
 ?>
