@@ -1,5 +1,14 @@
 <?php
 
+function load_config() {
+    static $config = null;
+    if ($config === null) {
+        $config = json_decode(file_get_contents("config.json"), true);
+    }
+    return $config;
+}
+
+
 function get_login_state_auth() {
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
@@ -85,6 +94,13 @@ function authenticate_by_token($token, $ip) {
 }
 
 function log_connection() {
+    
+    //load config.json and check for log state bypass
+    $config = load_config();
+    if ($config['log_state'] == "null") {
+        return;
+    }
+    
     // Start session if it hasn't already been started
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
@@ -125,7 +141,14 @@ function log_connection() {
     file_put_contents("logs/access_logs.json", $encode);
 }
 
-function log_form ($form_id, $form_data) {// Start session if it hasn't already been started
+function log_form($form_id, $form_data) {// Start session if it hasn't already been started
+
+    //load config.json and check for log state bypass
+    $config = load_config();
+    if ($config['log_state'] == "null") {
+        return;
+    }
+
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
@@ -173,6 +196,12 @@ function log_form ($form_id, $form_data) {// Start session if it hasn't already 
 }
 
 function firewall() {
+    //configurator bypass
+    $config = load_config();
+    if ($config['firewall_state'] == "null") {
+        return true;
+    }
+
     //constants
     $now = round(microtime(true) * 1000);
     $sample = 900*1000;#(ms) (900*1000)

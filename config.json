@@ -1,0 +1,8 @@
+{
+    "debug" : true,
+    "src" : "172.16.1.91:3000",
+    "running_dir" : "./",
+    "log_dir" : "./logs/",
+    "log_state" : "null",
+    "firewall_state" : "null"
+}
