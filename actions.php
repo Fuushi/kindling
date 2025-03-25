@@ -30,6 +30,16 @@ if ($action === "logout") {
   session_destroy();
 }
 
+elseif ($action === "logout_all") {
+  //invalidate all tokens
+  flush_user_tokens();
+  
+  //log user out
+  setcookie("auth_token", "empty", time()-3600, "/", $secure=true);
+  session_destroy();
+
+}
+
 elseif ($action === "signin") {
   //perform sign up
   $username= $_POST['username'] ?? "";
@@ -72,8 +82,11 @@ elseif ($action === "signin") {
 
   //call function
   remove_collection($collection_id);
+
+
 } elseif ($action == "create_collection") {
   if (!($user === "admin")) {return 401;}
+
   echo "Creating Collection";
   $collection_id = $_POST['collection_name'] ?? null;
   if ($collection_id == null) {

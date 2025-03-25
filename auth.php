@@ -19,6 +19,41 @@ function get_login_state_auth() {
     return null;
 }
 
+function flush_user_tokens() {
+    //runs based on internal session
+
+    //load database ;)
+    $str = file_get_contents("logs/users.json");
+    $json = json_decode($str, true); // decode the JSON into an associative array
+
+    //get user
+    $user = get_login_state_auth();
+
+    //validate user id
+    if (!$user) {
+        return false;
+    }
+
+    //iterate until match found
+    foreach($json as $key => $user_data) { // Use $key to reference the position in the array
+        if ($user_data['username'] === $user) {
+            //get token array
+            $tokens=$json[$key]['tokens'];
+
+            //clear tokens
+            $json[$key]['tokens'] = [];
+
+            //dump token to file
+            $encode = json_encode($json, JSON_PRETTY_PRINT);
+            file_put_contents("logs/users.json", $encode);
+
+            return true;
+        }
+    }
+
+    return false;
+}
+
 function generateRandomString($length = 10) {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $charactersLength = strlen($characters);
