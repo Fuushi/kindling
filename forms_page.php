@@ -27,7 +27,11 @@ if ($form_id === "sign_in") {
 elseif ($form_id === "create_collection") {
     //include collection create sublet
     include 'sublets/collection_create_sublet.php';
-    
+}
+
+elseif ($form_id === "account_settings") {
+    //include account settings sublet
+    include 'sublets/account_settings_sublet.php';
 }
 
 ?>

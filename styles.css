@@ -329,3 +329,15 @@ form button {
     padding-left: 10%;
     color: gray;
 }
+
+.pfp {
+    width: 100px;
+    height: 100px;
+    border-radius: 50px;
+    margin-bottom: 30px;
+}
+
+.gray_text {
+    color:gray;
+    font-size: 15px;
+}
