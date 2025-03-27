@@ -6,7 +6,7 @@
             <input id="password" name="password" type="password" placeholder="Password" style="color: gray; margin:40px; width: 80%; background-color: #0f0f0f; margin-top: -30px; margin-bottom: 8px; " />
             <div>
             <center>
-            <input type="submit" style="position:relative; color: gray; width: 20%; background-color:#0f0f0f; padding-top: -80px; margin-bottom: 40px;" />
+            <input type="submit" class="button_input_style" />
             </center>
             </div>
         </form>

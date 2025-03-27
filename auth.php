@@ -370,4 +370,37 @@ function firewall() {
 
     return true;
 }
+
+function change_password($password_hash) {
+    //get user from session (DO NOT TRUST EXTERNAL DATA)
+
+    //get user 
+    $user = get_login_state_auth(); //user_id or null
+
+    //validate 
+    if ($user === null) {
+        return false;
+    }
+
+    //load database ;)
+    $str = file_get_contents("logs/users.json");
+    $json = json_decode($str, true); // decode the JSON into an associative array
+
+    //iterate until match found
+    foreach($json as $key => $user_data) { // Use $key to reference the position in the array
+        if ($user_data['username'] === $user) {
+            //update password hash
+            $json[$key]['password_hash'] = $password_hash;
+
+            //dump token to file
+            $encode = json_encode($json, JSON_PRETTY_PRINT);
+            file_put_contents("logs/users.json", $encode);
+
+            return true;
+        }
+    }
+
+    //user not found case
+    return false;
+}
 ?>

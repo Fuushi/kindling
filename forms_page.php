@@ -34,6 +34,12 @@ elseif ($form_id === "account_settings") {
     include 'sublets/account_settings_sublet.php';
 }
 
+elseif ($form_id === "change_password") {
+    //include change password sublet
+    include 'sublets/change_password_sublet.php';
+}
+
+//TODO include default (fallback) sublet
 ?>
 
 <!DOCTYPE html>

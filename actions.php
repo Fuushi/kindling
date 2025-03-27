@@ -3,6 +3,15 @@ require 'on_connect.php';
 require 'functions.php';
 
 $delay = 0.1; //0.1
+$fail_delay = 3; //3
+
+function set_redirect($target,$delay) {
+  //ensure function is only called once
+  if ($target === null) {
+    return;
+  }
+  echo "<meta http-equiv='refresh' content='{$delay}; url={$target}' />";
+}
 
 //validate inputs
 if (! (isset($_GET['action']) and isset($_GET['redirect']))) {
@@ -17,7 +26,7 @@ $user = get_login_state();
 //get action
 $action=$_GET['action'];
 
-//set redirect
+//set redirect (can be overwritten inline)
 $redirect=urldecode($_GET['redirect']);
 
 //log
@@ -33,7 +42,7 @@ if ($action === "logout") {
 elseif ($action === "logout_all") {
   //invalidate all tokens
   flush_user_tokens();
-  
+
   //log user out
   setcookie("auth_token", "empty", time()-3600, "/", $secure=true);
   session_destroy();
@@ -101,14 +110,59 @@ elseif ($action === "signin") {
   echo "Collection Created";
 
   
+} elseif ($action == "change_password") {
+
+  //authenticate user
+  if ($user === null) {
+    echo "Not Logged In";
+    set_redirect("./index.php", $fail_delay);
+    //TODO flag ip for potential abuse..
+    return;
+  }
+
+  //get password data from request
+  $p1 = $_POST['p1'] ?? null;
+  $p2 = $_POST['p2'] ?? null;
+
+  //validate password data
+  if (empty($p1) || empty($p2)) {
+    echo "Invalid Password Data";
+    set_redirect("./forms_page.php?form=change_password", $fail_delay);
+    return;
+  }
+
+  //ensure passwords match
+  if ($p1 !== $p2) {
+    echo "Passwords Do Not Match";
+    set_redirect("./forms_page.php?form=change_password", $fail_delay);
+    return;
+  }
+
+  //hash password using a persistent sha256
+  $password_hash = hash("sha256", $p1);
+
+  //call auth.php change_password function
+  $auth_pass = change_password($password_hash);
+
+  if ($auth_pass === false) {
+    echo "Password Change Failed";
+    set_redirect("./forms_page.php?form=change_password", $fail_delay);
+    return;
+  }
+
+  echo "Password Changed Successfully";
+
 }
+
+//if no fail conditions, set redirect
+set_redirect($redirect, $delay);
+
 ?>
 
 
 <!DOCTYPE html>
 <html>
   <head>
-    <meta http-equiv="refresh" content="<?php echo $delay ?>; url='<?php echo $redirect ?>" />
   </head>
   <body style="background-color: black; color: white; font-size:medium;">
     <p>You will be redirected home soon!</p>

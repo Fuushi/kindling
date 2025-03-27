@@ -341,3 +341,14 @@ form button {
     color:gray;
     font-size: 15px;
 }
+
+.text_input_style {
+    color: gray; 
+    margin-bottom: 25px; 
+    width: 80%; 
+    background-color: #0f0f0f; 
+}
+
+.button_input_style {
+    position:relative; color: gray; width: 20%; background-color:#0f0f0f; padding-top: -80px; margin-bottom: 40px;
+}

@@ -22,7 +22,7 @@
 
             <div style="width: 60%; height: 3px; background-color:#0f0f0f; margin: 10px auto; border-radius:2px;"></div>
 
-            <p class="gray_text">Change Password</p>
+            <a style="text-decoration:none;" href="./forms_page.php?form=change_password"><p class="gray_text">Change Password</p></a>
 
             <div style="width: 60%; height: 3px; background-color:#0f0f0f; margin: 10px auto; border-radius:2px;"></div>
 
